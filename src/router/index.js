@@ -35,176 +35,337 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [{
-  path: '/redirect',
-  component: () => import('@/layout/index.vue'),
-  hidden: true,
-  children: [{
-    path: '/redirect/:path(.*)',
-    component: () =>
+    path: '/redirect',
+    component: () => import('@/layout/index.vue'),
+    hidden: true,
+    children: [{
+      path: '/redirect/:path(.*)',
+      component: () =>
         import('@/views/redirect/index')
-  }]
-},
-{
-  path: '/login',
-  component: () =>
-      import('@/views/login/login.vue'),
-  hidden: true
-},
-{
-  path: '/auth-redirect',
-  component: () =>
-      import('@/views/login/auth-redirect'),
-  hidden: true
-},
-{
-  path: '/404',
-  component: () =>
-      import('@/views/error-page/404'),
-  hidden: true
-},
-{
-  path: '/401',
-  component: () =>
-      import('@/views/error-page/401'),
-  hidden: true
-},
-{
-  path: '/board',
-  component: Layout,
-  redirect: '/board/one',
-  meta: {
-    title: '模板',
-    icon: 'dashboard'
-  },
-  hidden: true,
-  children: [{
-    path: 'one',
-    component: () =>
-        import('@/views/board/boardOne.vue'),
-    name: '模板一',
-    meta: {
-      title: '模板一',
-      icon: 'dashboard'
-    }
-  }]
-},
-{
-  path: '/',
-  component: Layout,
-  redirect: '/dashboard',
-  children: [{
-    path: 'dashboard',
-    component: () =>
-        import('@/views/dashboard/index'),
-    name: '首页',
-    meta: {
-      title: '首页',
-      icon: 'el-icon-s-home',
-      affix: true
-    }
-  }]
-},
-
-// 界面设置
-{
-  path: '/bea',
-  component: () =>
-      import('@/views/users/packageBoard.vue'),
-  name: '设计界面',
-
-  meta: {
-    title: '设计界面',
-    icon: 'el-icon-s-platform'
-  }
-},
-// 大屏遥控
-{
-  path: '/soc',
-  component: () =>
-      import('@/views/connact/index.vue'),
-  name: '大屏遥控',
-  hidden: true,
-  meta: {
-    title: '大屏遥控',
-    icon: 'el-icon-s-platform'
-  }
-},
-
-// 用户使用手册
-
-{
-  path: '/change',
-  component: Layout,
-  hidden: true,
-  children: [{
-    path: 'info',
-    component: () =>
-          import('@/views/dashboard/editor/changeInfo.vue'),
-    name: '修改密码',
-    meta: {
-      title: '修改密码',
-      icon: 'el-icon-edit-outline'
-    }
+    }]
   },
   {
-    path: 'pwd',
+    path: '/login',
     component: () =>
-          import('@/views/dashboard/editor/changepwd.vue'),
-    name: '修改密码',
+      import('@/views/login/login.vue'),
+    hidden: true
+  },
+  {
+    path: '/auth-redirect',
+    component: () =>
+      import('@/views/login/auth-redirect'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () =>
+      import('@/views/error-page/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () =>
+      import('@/views/error-page/401'),
+    hidden: true
+  },
+  {
+    path: '/board',
+    component: Layout,
+    redirect: '/board/one',
     meta: {
-      title: '修改密码',
-      icon: 'el-icon-edit-outline'
+      title: '模板',
+      icon: 'dashboard'
+    },
+    hidden: true,
+    children: [{
+      path: 'one',
+      component: () =>
+        import('@/views/board/boardOne.vue'),
+      name: '模板一',
+      meta: {
+        title: '模板一',
+        icon: 'dashboard'
+      }
+    }]
+  },
+  {
+    path: '/screenAdmin',
+    component: Layout,
+    meta: {
+      title: '系统',
+      icon: 'el-icon-s-home',
+    },
+    redirect: '/screenAdmin/user',
+    children: [{
+        path: 'user',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'user',
+        meta: {
+          title: '用户管理',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'role',
+        component: () =>
+          import('@/views/role/index'),
+        name: 'role',
+        meta: {
+          title: '角色管理',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'meun',
+        component: () =>
+          import('@/views/menu/index'),
+        name: 'menu',
+        meta: {
+          title: '菜单管理',
+          icon: 'el-icon-s-home'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/source',
+    component: Layout,
+    meta: {
+      title: '数据源',
+      icon: 'el-icon-s-home',
+    },
+    children: [
+      {
+        path: 'type',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'type',
+        meta: {
+          title: '数据源类别管理',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'index',
+        component: () =>
+          import('@/views/role/index'),
+        name: 'index',
+        meta: {
+          title: '数据源连接管理',
+          icon: 'el-icon-s-home'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/target',
+    component: Layout,
+    meta: {
+      title: '指标',
+      icon: 'el-icon-s-home',
+    },
+    children: [
+      {
+        path: 'type',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'type',
+        meta: {
+          title: '指标类别管理',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'index',
+        component: () =>
+          import('@/views/role/index'),
+        name: 'index',
+        meta: {
+          title: '指标管理',
+          icon: 'el-icon-s-home'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/compent',
+    component: Layout,
+    meta: {
+      title: '组件',
+      icon: 'el-icon-s-home',
+    },
+    children: [
+      {
+        path: 'type',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'type',
+        meta: {
+          title: '组件类别管理',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'index',
+        component: () =>
+          import('@/views/role/index'),
+        name: 'index',
+        meta: {
+          title: '大屏组件',
+          icon: 'el-icon-s-home'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/screen',
+    component: Layout,
+    meta: {
+      title: '可视化大屏',
+      icon: 'el-icon-s-home',
+    },
+    children: [
+     
+      {
+        path: 'index',
+        component: () =>
+          import('@/views/role/index'),
+        name: 'index',
+        meta: {
+          title: '大屏生产',
+          icon: 'el-icon-s-home'
+        }
+      },
+      {
+        path: 'type',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'type',
+        meta: {
+          title: '大屏模板',
+          icon: 'el-icon-s-home'
+        }
+      },
+
+      {
+        path: 'control',
+        component: () =>
+          import('@/views/user/index'),
+        name: 'control',
+        meta: {
+          title: '大屏遥控权限',
+          icon: 'el-icon-s-home'
+        }
+      },
+    ]
+  },
+
+  // 界面设置
+  {
+    path: '/bea',
+    component: () =>
+      import('@/views/users/packageBoard.vue'),
+    name: '设计界面',
+    hidden: true,
+
+    meta: {
+      title: '设计界面',
+      icon: 'el-icon-s-platform'
     }
-  }
-  ]
-},
-{
-  path: '/test',
-  component: Layout,
-  hidden: true,
-  children: [{
-    path: '',
+  },
+  // 大屏遥控
+  {
+    path: '/soc',
     component: () =>
-        import('@/views/test/test.vue'),
-    name: '测试界面',
+      import('@/views/connact/index.vue'),
+    name: '大屏遥控',
+    hidden: true,
     meta: {
-      title: '测试界面',
+      title: '大屏遥控',
+      icon: 'el-icon-s-platform'
+    }
+  },
+
+  // 用户使用手册
+
+  {
+    path: '/change',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'info',
+        component: () =>
+          import('@/views/dashboard/editor/changeInfo.vue'),
+        name: '修改密码',
+        meta: {
+          title: '修改密码',
+          icon: 'el-icon-edit-outline'
+        }
+      },
+      {
+        path: 'pwd',
+        component: () =>
+          import('@/views/dashboard/editor/changepwd.vue'),
+        name: '修改密码',
+        meta: {
+          title: '修改密码',
+          icon: 'el-icon-edit-outline'
+        }
+      }
+    ]
+  },
+  {
+    path: '/test',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '',
+      component: () =>
+        import('@/views/test/test.vue'),
+      name: '测试界面',
+      meta: {
+        title: '测试界面',
+        icon: 'el-icon-s-home'
+      }
+    }]
+  },
+  {
+    path: '/planLayout',
+    component: () =>
+      import('@/views/users/createLayout.vue'),
+    hidden: true,
+    name: '界面设计',
+    meta: {
+      title: '界面设计',
       icon: 'el-icon-s-home'
     }
-  }]
-},
-{
-  path: '/planLayout',
-  component: () =>
-        import('@/views/users/createLayout.vue'),
-  hidden: true,
-  name: '界面设计',
-  meta: {
-    title: '界面设计',
-    icon: 'el-icon-s-home'
-  }
-},
-{
-  path: '/screen',
-  component: () =>
-    import('@/views/test/screen.vue'),
-  hidden: true,
-  meta: {
-    title: '测试大屏',
-    icon: 'el-icon-s-home'
-  }
-},
-{
-  path: '/packBoard',
-  component: () =>
+  },
+  // {
+  //   path: '/screen',
+  //   component: () =>
+  //     import('@/views/test/screen.vue'),
+  //   hidden: true,
+  //   meta: {
+  //     title: '测试大屏',
+  //     icon: 'el-icon-s-home'
+  //   }
+  // },
+  {
+    path: '/packBoard',
+    component: () =>
       import('@/views/users/packageBoard.vue'),
-  name: '订阅',
-  hidden: true,
-  meta: {
-    title: '订阅',
-    icon: 'el-icon-s-platform'
+    name: '订阅',
+    hidden: true,
+    meta: {
+      title: '订阅',
+      icon: 'el-icon-s-platform'
+    }
   }
-}
   // {
   //   path: '/doc',
   //   component: Layout,

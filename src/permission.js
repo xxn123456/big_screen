@@ -25,7 +25,7 @@ router.beforeEach(async(to, from, next) => {
   if (hasToken) {
     if (to.path == '/login' || to.path == '/') {
       next({
-        path: '/dashboard'
+        path: '/screenAdmin'
       })
     } else {
       const hasRoles = store.getters.roles && store.getters.roles.length > 0

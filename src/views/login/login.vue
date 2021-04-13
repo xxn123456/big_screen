@@ -99,7 +99,7 @@ export default {
           console.log('进入跳转')
           this.loading = false
           this.$router.push({
-            path: '/'
+            path: '/screenAdmin'
           })
           this.$store.dispatch('user/getInfo')
         }).catch(() => {

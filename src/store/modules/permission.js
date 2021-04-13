@@ -56,7 +56,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
-    console.log('同步路由', constantRoutes)
+
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   }

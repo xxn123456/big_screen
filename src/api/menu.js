@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 搜索分页
 export function findAll(data) {
   return request({
-    url: '/role/findAll',
+    url: '/menu/findAll',
     // 此处admin是代理
     method: 'post',
     headers: {
@@ -13,10 +13,23 @@ export function findAll(data) {
   })
 }
 
+// 搜索分页
+export function findAllMenu(data) {
+  return request({
+    url: '/menu/findAllMenu',
+    // 此处admin是代理
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    data
+  })
+}
+
 // 查找文章详情
 export function findOne(data) {
   return request({
-    url: '/role/findOne',
+    url: '/menu/findOne',
     // 此处admin是代理
     method: 'post',
     headers: {
@@ -29,7 +42,7 @@ export function findOne(data) {
 // 创建文章类别
 export function create(data) {
     return request({
-      url: '/role/create',
+      url: '/menu/create',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -41,7 +54,7 @@ export function create(data) {
 // 修改文章类别
 export function update(data) {
     return request({
-      url: '/role/update',
+      url: '/menu/update',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -55,7 +68,7 @@ export function update(data) {
 
 export function del(data) {
     return request({
-      url: '/role/del',
+      url: '/menu/del',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -69,7 +82,7 @@ export function del(data) {
 
 export function batchDel(data) {
   return request({
-    url: '/role/batchDel',
+    url: '/menu/batchDel',
     // 此处admin是代理
     method: 'post',
     headers: {
