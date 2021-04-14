@@ -100,9 +100,10 @@ export const constantRoutes = [{
         path: 'user',
         component: () =>
           import('@/views/user/index'),
-        name: 'user',
+      
         meta: {
           title: '用户管理',
+          affix: true,
           icon: 'el-icon-s-home'
         }
       },
@@ -110,7 +111,7 @@ export const constantRoutes = [{
         path: 'role',
         component: () =>
           import('@/views/role/index'),
-        name: 'role',
+       
         meta: {
           title: '角色管理',
           icon: 'el-icon-s-home'
@@ -120,7 +121,7 @@ export const constantRoutes = [{
         path: 'meun',
         component: () =>
           import('@/views/menu/index'),
-        name: 'menu',
+        
         meta: {
           title: '菜单管理',
           icon: 'el-icon-s-home'
@@ -130,7 +131,7 @@ export const constantRoutes = [{
   },
 
   {
-    path: '/source',
+    path: '/source_conect',
     component: Layout,
     meta: {
       title: '数据源',
@@ -140,8 +141,8 @@ export const constantRoutes = [{
       {
         path: 'type',
         component: () =>
-          import('@/views/user/index'),
-        name: 'type',
+          import('@/views/sourceType/index'),
+       
         meta: {
           title: '数据源类别管理',
           icon: 'el-icon-s-home'
@@ -150,8 +151,8 @@ export const constantRoutes = [{
       {
         path: 'index',
         component: () =>
-          import('@/views/role/index'),
-        name: 'index',
+          import('@/views/source/index'),
+       
         meta: {
           title: '数据源连接管理',
           icon: 'el-icon-s-home'
@@ -171,8 +172,8 @@ export const constantRoutes = [{
       {
         path: 'type',
         component: () =>
-          import('@/views/user/index'),
-        name: 'type',
+          import('@/views/targetType/index'),
+        name: 't_type',
         meta: {
           title: '指标类别管理',
           icon: 'el-icon-s-home'
@@ -181,8 +182,8 @@ export const constantRoutes = [{
       {
         path: 'index',
         component: () =>
-          import('@/views/role/index'),
-        name: 'index',
+          import('@/views/target/index'),
+        name: 't_index',
         meta: {
           title: '指标管理',
           icon: 'el-icon-s-home'
@@ -203,7 +204,7 @@ export const constantRoutes = [{
         path: 'type',
         component: () =>
           import('@/views/user/index'),
-        name: 'type',
+      
         meta: {
           title: '组件类别管理',
           icon: 'el-icon-s-home'
@@ -213,7 +214,7 @@ export const constantRoutes = [{
         path: 'index',
         component: () =>
           import('@/views/role/index'),
-        name: 'index',
+       
         meta: {
           title: '大屏组件',
           icon: 'el-icon-s-home'
@@ -235,9 +236,9 @@ export const constantRoutes = [{
         path: 'index',
         component: () =>
           import('@/views/role/index'),
-        name: 'index',
+      
         meta: {
-          title: '大屏生产',
+          title: '数字大屏',
           icon: 'el-icon-s-home'
         }
       },
@@ -245,7 +246,7 @@ export const constantRoutes = [{
         path: 'type',
         component: () =>
           import('@/views/user/index'),
-        name: 'type',
+      
         meta: {
           title: '大屏模板',
           icon: 'el-icon-s-home'
@@ -256,7 +257,7 @@ export const constantRoutes = [{
         path: 'control',
         component: () =>
           import('@/views/user/index'),
-        name: 'control',
+    
         meta: {
           title: '大屏遥控权限',
           icon: 'el-icon-s-home'
