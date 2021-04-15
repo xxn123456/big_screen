@@ -79,6 +79,19 @@ export function batchDel(data) {
   })
 }
 
+export function findSourceAndType(data) {
+  return request({
+    url: '/source/findSourceAndType',
+    // 此处admin是代理
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    data
+  })
+}
+
+
 
 
 

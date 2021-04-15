@@ -53,17 +53,22 @@
         <el-table-column prop="title" label="指标名称" width="180" align="left">
         </el-table-column>
 
-        <el-table-column prop="target_type.title" label="指标类别" width="180" align="left">
+        <el-table-column prop="target_type.title" label="指标类别" align="left">
         </el-table-column>
 
-        <el-table-column prop="sql_order" label="sql语句" width="180" align="left">
-        </el-table-column>
+
+
         <el-table-column prop="source_mysql.title" label="数据源名称" align="right" :formatter="Tableformatter">
         </el-table-column>
 
+        <el-table-column prop="source_type.catename" label="数据类型" align="right">
+        </el-table-column>
 
-        <el-table-column prop="content" label="实时数据(结果集)" align="right" :formatter="TablePassFormatter">
 
+        <el-table-column label="实时数据(结果集)" align="right">
+          <template slot-scope="scope">
+            隐藏
+          </template>
 
         </el-table-column>
 
@@ -88,37 +93,43 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="操作" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="角色:">
-          <el-select v-model="form.role_id" placeholder="请选择">
-            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+
+
+    <el-dialog title="操作" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
+      <el-form ref="form_add" :model="form" label-width="120px">
+        <el-form-item label="指标名称:">
+          <el-input v-model="form.title" placeholder="请输入内容"></el-input>
+        </el-form-item>
+
+        <el-form-item label="指标类型:">
+          <el-select v-model="form.target_type_id" placeholder="请选择">
+            <el-option v-for="item in target_types" :key="item.id" :label="item.title" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="操作" :visible.sync="dialogVisible_add" width="30%" :before-close="handleClose">
-      <el-form ref="form_add" :model="form_add" label-width="80px">
-        <el-form-item label="姓名:">
-          <el-input v-model="form_add.userName" placeholder="请输入内容"></el-input>
+        <el-form-item label="数据源:">
+          <el-cascader v-model="form.source" :options="sourcesAndTypes"></el-cascader>
         </el-form-item>
 
-        <el-form-item label="密码:">
-          <el-input v-model="form_add.password" placeholder="请输入内容"></el-input>
+        <el-form-item label="sql语句:">
+          <el-input type="textarea" :rows="3" v-model="form.sql_order" placeholder="请输入内容"></el-input>
         </el-form-item>
-        <el-form-item label="角色:">
-          <el-select v-model="form_add.role_id" placeholder="请选择">
-            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
+
+        <el-form-item label="测试结果集:">
+
+          <el-switch v-model="form.active_content" active-text="显示" inactive-text="关闭">
+          </el-switch>
         </el-form-item>
+
+        <el-form-item label="结果集:">
+
+          <p>{{form.content}}</p>
+
+
+        </el-form-item>
+
+
 
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -142,6 +153,14 @@
     findOne
   } from "@/api/sourceType.js";
 
+  import {
+    findSourceAndType
+  } from "@/api/source.js";
+
+  import {
+    findAllSoureType
+  } from "@/api/targetType.js";
+
   import Query from "@/utils/sourceQuery.js";
 
 
@@ -157,20 +176,29 @@
         roles: [],
         form: {
           id: "",
-          role_id: ""
+          title: "",
+          target_type_id: null,
+          sql_order: ""
         },
-        form_add: {
-          userName: "",
-          password: "",
-          role_id: ""
+        target_types: [],
+        sourcesAndTypes: [
+        {
+          "value": 'zhinan',
+          "label": '指南',
+          "children": [{
+            "value": 'shejiyuanze',
+            "label": '设计原则'
+          }]
         },
-        expand_table: {
-          source_type: null,
-          sql_order: null,
-          source_table: null,
-          content: null,
-
-        },
+         {
+            "value": 3,
+            "label": "\"本地数据源\",",
+            "children": {
+                "value": 1,
+                "label": "mongose"
+            }
+        }
+        ],
         // 0代表新增操作,1代码修改操作
         submitState: 0,
         tableData: [{}],
@@ -178,8 +206,7 @@
         pageSize: 10,
         categoryName: "",
         total: 400,
-        dialogVisible: false,
-        dialogVisible_add: false
+        dialogVisible: false
 
       }
     },
@@ -220,10 +247,12 @@
               let new_list = data.rows.map((el, index) => {
                 return {
                   id: el.id,
-                  userName: el.userName,
-                  avatar: el.avatar,
-                  role_id: el.role_id,
-                  role_name: el.role.name,
+                  title: el.title,
+                  sql_order: el.sql_order,
+                  content: el.content,
+                  target_type: el.target_type,
+                  source: el.source_mysql,
+                  source_type: el.source_type,
                   createdAt: el.createdAt
                 }
               })
@@ -238,66 +267,35 @@
 
 
       },
-      // 获取所有角色
-      findAllRole() {
-        return new Promise((resolve, reject) => {
 
-          findAllRole().then((res) => {
-            let {
-              data,
-              code
-            } = res;
-            if (code == "200") {
-              this.roles = data
-            }
-          })
-
-        })
-
-
-      },
       // 多选操作
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
 
       // 查询结果集
-     async query_source(row) {
+      async query_source(row) {
+
+        console.log("结果集", row)
         let source_type, source_config, sql_order;
+
         source_config = row.source;
         sql_order = row.sql_order;
-        let source_type_id = qs.stringify({
-          id: row.source.source_type_id
-        });
+        source_type = row.source_type.catename;
         return new Promise((resolve, reject) => {
-          findOne(source_type_id).then((res) => {
-            let {
-              code,
-              data
-            } = res;
-            if (code == "200") {
-              source_type = data.catename;
-              let query = new Query(source_type, source_config, sql_order);
-              let query_reslut = query.conect_source();
-              resolve(query_reslut)
-            } else {
-              this.$message("查询数据库类型失败")
-            }
-          });
-
-
+          let query = new Query(source_type, source_config, sql_order);
+          let query_reslut = query.conect_source();
+          resolve(query_reslut)
         });
 
 
 
       },
       // 表格展开
-     async expandChange(row) {
-      let result= await this.query_source(row);
+      async expandChange(row) {
+        let result = await this.query_source(row);
 
-      console.log("结果执行了",result)
-        
-
+        console.log("结果执行了", result)
 
 
 
@@ -305,6 +303,51 @@
 
 
 
+
+
+
+
+      },
+
+      // 查询所有指标分类
+
+      findAllSoureType() {
+        return new Promise((resolve, reject) => {
+          findAllSoureType().then((res) => {
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
+
+
+              this.target_types = data
+            }
+
+          })
+        })
+
+
+
+      },
+      // 查询所有数据源和类别
+      findSourceAndType() {
+        return new Promise((resolve, reject) => {
+          findSourceAndType().then((res) => {
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
+
+              console.log("指标",data)
+
+
+              // this.sourcesAndTypes = data;
+            }
+
+          })
+        })
 
 
       },
@@ -355,6 +398,7 @@
                   content: el.content,
                   target_type: el.target_type,
                   source: el.source_mysql,
+                  source_type: el.source_type,
                   createdAt: el.createdAt
                 }
               })
@@ -370,15 +414,17 @@
       },
       handleAdd() {
         this.cleanRow();
-        this.findAllRole();
-        this.dialogVisible_add = true;
+        this.findAllSoureType();
+
+        this.findSourceAndType();
+
+        this.dialogVisible = true;
         this.submitState = 0;
 
       },
       // 进行编辑
       handleEdit(index, row) {
         this.dialogVisible = true;
-        this.findAllRole();
         this.submitState = 1;
         let new_row = Object.assign({}, row);
         this.form.id = new_row.id;

@@ -47,7 +47,7 @@
 
     <el-dialog title="操作" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <el-form ref="form" :model="form" label-width="120px">
-        <el-form-item label="数据源类别名称:">
+        <el-form-item label="指标类别名称:">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
       </el-form>
@@ -62,7 +62,7 @@
   import {
     findAll,
     create,
-    updata,
+    update,
     del,
     batchDel
   } from "@/api/targetType.js";
@@ -285,11 +285,11 @@
             break;
           case 1:
 
-            let msg_updata = qs.stringify({
+            let msg_update = qs.stringify({
               id: this.form.id,
               title: this.form.title
             });
-            updata(msg_updata).then((res) => {
+            update(msg_update).then((res) => {
               let {
 
                 code
