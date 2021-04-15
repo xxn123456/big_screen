@@ -118,7 +118,7 @@
 
         <el-form-item label="测试结果集:">
 
-          <el-switch v-model="form.active_content" active-text="显示" inactive-text="关闭">
+          <el-switch v-model="form.active_content" active-text="打开" inactive-text="关闭" @change="openReslut" >
           </el-switch>
         </el-form-item>
 
@@ -181,24 +181,7 @@
           sql_order: ""
         },
         target_types: [],
-        sourcesAndTypes: [
-        {
-          "value": 'zhinan',
-          "label": '指南',
-          "children": [{
-            "value": 'shejiyuanze',
-            "label": '设计原则'
-          }]
-        },
-         {
-            "value": 3,
-            "label": "\"本地数据源\",",
-            "children": {
-                "value": 1,
-                "label": "mongose"
-            }
-        }
-        ],
+        sourcesAndTypes: [],
         // 0代表新增操作,1代码修改操作
         submitState: 0,
         tableData: [{}],
@@ -251,7 +234,8 @@
                   sql_order: el.sql_order,
                   content: el.content,
                   target_type: el.target_type,
-                  source: el.source_mysql,
+                  target_type_id:el.target_type_id,
+                  source: el.source,
                   source_type: el.source_type,
                   createdAt: el.createdAt
                 }
@@ -272,11 +256,27 @@
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
+      async openReslut(val){
+        if(val==true){
+
+          let row={
+             source:this.form.source_id,
+             source_type:this.form.source_type.catename,
+             sql_order:this.form.sql_order
+          }
+
+          // 开始请求各种数据库接口
+          await this.query_source(row);
+
+        }
+       
+
+      },
 
       // 查询结果集
       async query_source(row) {
 
-        console.log("结果集", row)
+  
         let source_type, source_config, sql_order;
 
         source_config = row.source;
@@ -293,20 +293,7 @@
       },
       // 表格展开
       async expandChange(row) {
-        let result = await this.query_source(row);
-
-        console.log("结果执行了", result)
-
-
-
-
-
-
-
-
-
-
-
+      
       },
 
       // 查询所有指标分类
@@ -340,10 +327,7 @@
             } = res;
             if (code == "200") {
 
-              console.log("指标",data)
-
-
-              // this.sourcesAndTypes = data;
+              this.sourcesAndTypes = data;
             }
 
           })
@@ -397,7 +381,8 @@
                   sql_order: el.sql_order,
                   content: el.content,
                   target_type: el.target_type,
-                  source: el.source_mysql,
+                  target_type_id:el.target_type_id,
+                  source: el.source_id,
                   source_type: el.source_type,
                   createdAt: el.createdAt
                 }
@@ -424,11 +409,20 @@
       },
       // 进行编辑
       handleEdit(index, row) {
+
+        console.log("获取到参数",row);
+        this.findAllSoureType();
+        this.findSourceAndType();
         this.dialogVisible = true;
         this.submitState = 1;
         let new_row = Object.assign({}, row);
         this.form.id = new_row.id;
-        this.form.role_id = new_row.role_id;
+        this.form.title = new_row.title;
+        this.form.target_type_id = new_row.target_type_id;
+        this.form.source = [new_row.source,new_row.source_type.id];
+        this.form.sql_order = new_row.sql_order,
+        this.form.content = new_row.content
+
       },
       cleanRow() {
         for (let key in this.form) {
@@ -463,16 +457,19 @@
         switch (this.submitState) {
           case 0:
             let msg_create = qs.stringify({
-              userName: this.form_add.userName,
-              password: this.form_add.password,
-              role_id: this.form_add.role_id
+              title: this.form.title,
+              target_type_id: this.form.target_type_id,
+              source_id: this.form.source[0],
+              source_type_id: this.form.source[1],
+              sql_order: this.form.sql_order,
+              content: this.form.content
             });
             create(msg_create).then((res) => {
               let {
                 code
               } = res;
               if (code == "200") {
-                this.dialogVisible_add = false;
+                this.dialogVisible = false;
                 // 刷新表格
                 this.findAll();
               } else {
@@ -485,8 +482,12 @@
 
             let msg_updata = qs.stringify({
               id: this.form.id,
-              categoryName: this.form.categoryName,
-              categoryCreater: "admin"
+              title: this.form.title,
+              target_type_id: this.form.target_type_id,
+              source_id: this.form.source[0],
+              source_type_id: this.form.source[1],
+              sql_order: this.form.sql_order,
+              content: this.form.content
             });
             updata(msg_updata).then((res) => {
               let {
