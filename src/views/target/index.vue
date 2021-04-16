@@ -116,13 +116,13 @@
           <el-input type="textarea" :rows="3" v-model="form.sql_order" placeholder="请输入内容"></el-input>
         </el-form-item>
 
-        <el-form-item label="测试结果集:">
+        <el-form-item label="测试结果集:" v-show="submitState==1">
 
           <el-switch v-model="form.active_content" active-text="打开" inactive-text="关闭" @change="openReslut" >
           </el-switch>
         </el-form-item>
 
-        <el-form-item label="结果集:">
+        <el-form-item label="结果集:" v-show="submitState==1">
 
           <p>{{form.content}}</p>
 
@@ -177,8 +177,11 @@
         form: {
           id: "",
           title: "",
+          source:[],
+          source_type:"",
           target_type_id: null,
-          sql_order: ""
+          sql_order: "",
+          content: null
         },
         target_types: [],
         sourcesAndTypes: [],
@@ -260,13 +263,17 @@
         if(val==true){
 
           let row={
-             source:this.form.source_id,
-             source_type:this.form.source_type.catename,
+             source:this.form.source[0],
+             source_type:this.form.source_type,
              sql_order:this.form.sql_order
           }
 
           // 开始请求各种数据库接口
-          await this.query_source(row);
+          let result =await this.query_source(row);
+
+          this.form.content=result;
+
+          console.log("查询到结果",result)
 
         }
        
@@ -420,6 +427,7 @@
         this.form.title = new_row.title;
         this.form.target_type_id = new_row.target_type_id;
         this.form.source = [new_row.source,new_row.source_type.id];
+        this.form.source_type=new_row.source_type;
         this.form.sql_order = new_row.sql_order,
         this.form.content = new_row.content
 
