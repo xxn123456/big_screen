@@ -488,7 +488,7 @@
             break;
           case 1:
 
-            let msg_updata = qs.stringify({
+            let msg_update = qs.stringify({
               id: this.form.id,
               title: this.form.title,
               target_type_id: this.form.target_type_id,
@@ -497,7 +497,7 @@
               sql_order: this.form.sql_order,
               content: this.form.content
             });
-            updata(msg_updata).then((res) => {
+            update(msg_update).then((res) => {
               let {
                 articleType,
                 code

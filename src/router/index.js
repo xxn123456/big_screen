@@ -204,7 +204,7 @@ export const constantRoutes = [{
       {
         path: 'type',
         component: () =>
-          import('@/views/user/index'),
+          import('@/views/componentType/index'),
           name: '组件类别管理',
         meta: {
           title: '组件类别管理',
@@ -214,7 +214,7 @@ export const constantRoutes = [{
       {
         path: 'index',
         component: () =>
-          import('@/views/role/index'),
+          import('@/views/component/index.vue'),
           name: '大屏组件',
         meta: {
           title: '大屏组件',
@@ -236,34 +236,13 @@ export const constantRoutes = [{
       {
         path: 'index',
         component: () =>
-          import('@/views/role/index'),
+          import('@/views/screen/index'),
           name: '数字大屏',
         meta: {
           title: '数字大屏',
           icon: 'el-icon-s-home'
         }
-      },
-      {
-        path: 'type',
-        component: () =>
-          import('@/views/user/index'),
-          name: '大屏模板',
-        meta: {
-          title: '大屏模板',
-          icon: 'el-icon-s-home'
-        }
-      },
-
-      {
-        path: 'control',
-        component: () =>
-          import('@/views/user/index'),
-          name: '大屏遥控权限',
-        meta: {
-          title: '大屏遥控权限',
-          icon: 'el-icon-s-home'
-        }
-      },
+      }
     ]
   },
 

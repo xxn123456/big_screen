@@ -25,14 +25,14 @@
         </el-table-column>
         <el-table-column type="index" width="50">
         </el-table-column>
-        <el-table-column prop="name" label="角色名称" width="180" align="left">
+        <el-table-column prop="title" label="大屏名称" width="180" align="left">
         </el-table-column>
-        <el-table-column prop="role_router" label="菜单权限" align="left" :formatter="Tableformatter">
+        <el-table-column prop="conver" label="封面" align="left" :formatter="Tableformatter">
         </el-table-column>
 
-        <el-table-column prop="role_screen" label="大屏权限" align="right" :formatter="Tableformatter">
+        <el-table-column prop="user.userName" label="作者" width="180" align="left" :formatter="Tableformatter">
         </el-table-column>
-        <el-table-column prop="createdAt" label="创建时间" align="right" :formatter="Tableformatter">
+        <el-table-column prop="updatedAt" label="更新时间" align="right" :formatter="Tableformatter">
         </el-table-column>
 
 
@@ -40,6 +40,9 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">设计界面</el-button>
+
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -51,28 +54,22 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="操作" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="120px">
-        <el-form-item label="角色名称">
-          <el-input v-model="form.name"></el-input>
+    <el-dialog title="操作" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="大屏名称">
+          <el-input v-model="form.title"></el-input>
         </el-form-item>
+        <el-form-item label="封面">
 
-        <el-form-item label="菜单权限:">
-          <el-tree ref="menuTree" :data="menus" show-checkbox node-key="value" :props="defaultProps"
-            @check-change="selectTree">
-          </el-tree>
-        </el-form-item>
-
-        <el-form-item label="大屏权限:">
-
-
-          <el-checkbox-group v-model="form.role_screen">
-            <el-checkbox v-for="screen in screens" :label="screen.label" :key="screen.value">{{screen.label}}
-            </el-checkbox>
-          </el-checkbox-group>
+          <el-upload class="upload-demo" action="http://localhost:3000/screen/upload" multiple :limit="1"
+            :file-list="fileList" :on-success="uploadSuccess">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
 
 
         </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -87,11 +84,12 @@
     create,
     update,
     del,
-    batchDel,
-    findAllMenu,
-    findAllScreen
-  } from "@/api/role.js";
+    batchDel
+  } from "@/api/screen.js";
   import qs from 'query-string';
+  import {
+    mapState
+  } from 'vuex';
   export default {
     data() {
       return {
@@ -99,22 +97,14 @@
           time: "",
           name: ""
         },
-
+        multipleSelection: [],
         form: {
-          id: null,
-          name: null,
-          role_router: [],
-          role_screen: []
+          id: "",
+          title: null,
+          conver: null,
+          user: {}
         },
-
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        // 所有菜单
-        menus: [],
-
-        screens: [],
+        fileList: [],
         // 0代表新增操作,1代码修改操作
         submitState: 0,
         tableData: [],
@@ -126,10 +116,13 @@
 
       }
     },
+    computed: {
+      ...mapState({
+        USERID: state => state.user.userId,
+      })
+    },
     mounted() {
       this.findAll();
-      let test = new Date('2017-2-1').getTime();
-      console.log("转换的时间", test)
     },
     methods: {
 
@@ -140,14 +133,13 @@
           return cellValue
         }
       },
-
       // 按照固定条件搜索
       searchList() {
-        console.log("进入搜索");
+
         let msg = qs.stringify({
           currentPage: this.currentPage,
           pageSize: this.pageSize,
-          name: this.search.name,
+          title: this.search.name,
           startTime: this.search.time[0],
           endTime: this.search.time[1]
         })
@@ -161,10 +153,10 @@
               let new_list = data.rows.map((el, index) => {
                 return {
                   id: el.id,
-                  name: el.name,
-                  role_router: el.role_router,
-                  role_screen: el.role_screen,
-                  createdAt: el.createdAt
+                  title: el.title,
+                  conver: el.conver,
+                  updatedAt: el.updatedAt,
+                  user: el.user
                 }
               })
               this.tableData = new_list;
@@ -209,6 +201,19 @@
 
         })
       },
+      uploadSuccess(response, file, fileList) {
+        let {
+          code,
+          url
+        } = response;
+        if (code == "200") {
+          this.form.conver = url;
+        } else {
+          this.$message("上传图片异常")
+        }
+        console.log("上传的文件夹", response);
+
+      },
       findAll() {
         let msg = qs.stringify({
           currentPage: this.currentPage,
@@ -224,10 +229,10 @@
               let new_list = data.rows.map((el, index) => {
                 return {
                   id: el.id,
-                  name: el.name,
-                  role_router: el.role_router,
-                  role_screen: el.role_screen,
-                  createdAt: el.createdAt
+                  title: el.title,
+                  conver: el.conver,
+                  updatedAt: el.updatedAt,
+                  user: el.user
                 }
               })
               this.tableData = new_list;
@@ -240,101 +245,23 @@
         })
 
       },
-      get_tree(data) {
-        let cloneData = JSON.parse(JSON.stringify(data))
-        return cloneData.filter(parent => {
-          let branchArr = cloneData.filter(child => parent['value'] == child['p_id']);
-          branchArr.length > 0 ? parent['children'] = branchArr : '';
-          return parent['p_id'] == 0;
-        })
-      },
-      // 查询所有菜单
-      findAllMenu() {
-        return new Promise((resolve, reject) => {
-          findAllMenu().then((res) => {
-            let {
-              code,
-              data
-            } = res;
-            if (code == "200") {
-              this.menus = this.get_tree(data);
-            } else {
-              this.$message("查询所有菜单失败")
-            }
-          })
-
-        })
-
-
-      },
-      selectTree() {
-
-        let MeneHasCheckKey = this.$refs.menuTree.getCheckedKeys().map(String);
-
-        this.form.role_router = MeneHasCheckKey;
-
-
-      },
-      findAllScreen() {
-        return new Promise((resolve, reject) => {
-          findAllScreen().then((res) => {
-            let {
-              code,
-              data
-            } = res;
-            if (code == "200") {
-              this.screens = data;
-            } else {
-              this.$message("查询所有大屏失败")
-            }
-          })
-
-        })
-
-
-      },
-
-      // 选择大屏
-      selectScreen(val) {
-        console.log("选中值", val);
-        // this.form.role_screen = val;
-
-
-
-
-      },
-
-
       handleAdd() {
         this.cleanRow();
-        this.findAllScreen();
-        this.findAllMenu();
         this.dialogVisible = true;
         this.submitState = 0;
       },
       // 进行编辑
       handleEdit(index, row) {
-        this.findAllMenu();
-        this.findAllScreen();
         this.dialogVisible = true;
         this.submitState = 1;
         let new_row = Object.assign({}, row);
         this.form.id = new_row.id;
-        this.form.name = new_row.name;
-
-        this.form.role_router=new_row.role_router;
-
-        this.$nextTick(()=>{
-           this.$refs.menuTree.setCheckedKeys(new_row.role_router.split(","));
-        })
-        this.form.role_screen = new_row.role_screen.split(",");
+        this.form.title = new_row.title;
+        this.form.conver = new_row.conver
       },
       cleanRow() {
-        this.form = {
-          id: null,
-          name: null,
-          role_router: [],
-          role_screen: []
+        for (let key in this.form) {
+          this.form[key] = ''
         }
       },
       // 进行删除
@@ -367,14 +294,13 @@
             console.log("开始")
 
             let msg_create = qs.stringify({
-              name: this.form.name,
-              role_router: this.form.role_router.toString(),
-              role_screen: this.form.role_screen.toString()
-
+              title: this.form.title,
+              conver: this.form.conver,
+              user_id: this.USERID
             });
             create(msg_create).then((res) => {
               let {
-                articleType,
+
                 code
               } = res;
               if (code == "200") {
@@ -391,13 +317,13 @@
 
             let msg_update = qs.stringify({
               id: this.form.id,
-               name: this.form.name,
-              role_router: this.form.role_router.toString(),
-              role_screen: this.form.role_screen.toString()
+              title: this.form.title,
+              conver: this.form.conver,
+              user_id: this.USERID
             });
             update(msg_update).then((res) => {
               let {
-                articleType,
+
                 code
               } = res;
               if (code == "200") {

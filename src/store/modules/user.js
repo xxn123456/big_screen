@@ -75,11 +75,9 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then((res) => {
-        const { userInfo } = res
+        const { data } = res;
 
-        console.log('获取到的用户信息', userInfo)
-
-        commit('SET_USER', userInfo)
+        commit('SET_ID', data.id)
 
         const userRole = ['admin']
 

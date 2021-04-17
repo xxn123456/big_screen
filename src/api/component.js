@@ -1,9 +1,8 @@
 import request from '@/utils/request'
-
 // 搜索分页
 export function findAll(data) {
   return request({
-    url: '/role/findAll',
+    url: '/component/findAll',
     // 此处admin是代理
     method: 'post',
     headers: {
@@ -16,7 +15,7 @@ export function findAll(data) {
 // 查找文章详情
 export function findOne(data) {
   return request({
-    url: '/role/findOne',
+    url: '/component/findOne',
     // 此处admin是代理
     method: 'post',
     headers: {
@@ -29,7 +28,7 @@ export function findOne(data) {
 // 创建文章类别
 export function create(data) {
     return request({
-      url: '/role/create',
+      url: '/component/create',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -41,7 +40,7 @@ export function create(data) {
 // 修改文章类别
 export function update(data) {
     return request({
-      url: '/role/update',
+      url: '/component/update',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -55,7 +54,7 @@ export function update(data) {
 
 export function del(data) {
     return request({
-      url: '/role/del',
+      url: '/component/del',
       // 此处admin是代理
       method: 'post',
       headers: {
@@ -69,7 +68,7 @@ export function del(data) {
 
 export function batchDel(data) {
   return request({
-    url: '/role/batchDel',
+    url: '/component/batchDel',
     // 此处admin是代理
     method: 'post',
     headers: {
@@ -79,10 +78,9 @@ export function batchDel(data) {
   })
 }
 
-
-export function findAllMenu(data) {
+export function findcomponentAndType(data) {
   return request({
-    url: '/menu/findAllMenu',
+    url: '/component/findcomponentAndType',
     // 此处admin是代理
     method: 'get',
     headers: {
@@ -92,17 +90,6 @@ export function findAllMenu(data) {
   })
 }
 
-export function findAllScreen(data) {
-  return request({
-    url: '/screen/findAllScreen',
-    // 此处admin是代理
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    },
-    data
-  })
-}
 
 
 
