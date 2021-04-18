@@ -1,5 +1,5 @@
-const imgUrl = 'http://10.199.32.157:8082/manage/static/image/'
+const IMGURL = process.env.VUE_APP_BASE_API
 
-// const imgUrl ="https://glzmh.whhealth.org.cn/manage";
+// http://localhost:3000
 
-export default imgUrl
+export default IMGURL

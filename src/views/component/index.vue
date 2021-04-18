@@ -78,7 +78,7 @@
 
         <el-form-item label="组件预览图">
           <el-upload class="upload-demo" action="http://localhost:3000/component/upload" multiple :limit="1"
-            :file-list="fileList" :on-success="uploadSuccess">
+            :file-list="fileList" :on-success="uploadSuccess" show-file-list="false">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -318,12 +318,16 @@
     },
     // 进行编辑
     handleEdit(index, row) {
+
       this.findAllComponentType();
       this.dialogVisible = true;
       this.submitState = 1;
       let new_row = Object.assign({}, row);
       this.form.id = new_row.id;
-      this.form.categoryName = new_row.artcleTypename;
+      this.form.name = new_row.name;
+      this.form.other_name = new_row.other_name;
+      this.form.component_type =new_row.component_type.id;
+      this.form.component_pic = new_row.component_pic;
     },
     cleanRow() {
       for (let key in this.form) {

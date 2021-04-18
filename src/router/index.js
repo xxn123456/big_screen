@@ -216,8 +216,20 @@ export const constantRoutes = [{
           title: '数字大屏',
           icon: 'el-icon-s-home'
         }
-      }
+      },
+      
+     
     ]
+  },
+  {
+    path: '/produceScreen',
+    component: () =>
+      import('@/views/screen/produceScreen.vue'),
+      name: '设计大屏',
+    meta: {
+      title: '设计大屏',
+      icon: 'el-icon-s-home'
+    }
   },
 
   // 界面设置
@@ -232,21 +244,7 @@ export const constantRoutes = [{
       title: '设计界面',
       icon: 'el-icon-s-platform'
     }
-  },
-
-
-
-  {
-    path: '/planLayout',
-    component: () =>
-      import('@/views/users/createLayout.vue'),
-    hidden: true,
-    name: '界面设计',
-    meta: {
-      title: '界面设计',
-      icon: 'el-icon-s-home'
-    }
-  },
+  }
 
 ]
 

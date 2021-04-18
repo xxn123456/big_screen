@@ -3,32 +3,13 @@
 
     <div class="screen-cont">
 
-      <vue-draggable-resizable
-        v-for="(item,index) in layout"
-        :w="item.place.w"
-        :key="item.index"
-        :h="item.place.h"
-        :x="item.place.x"
-        :y="item.place.y"
-        :min-width="50"
-        :min-height="10"
-        class="cont"
-        :drag-index="index"
-        :snap="true"
-        @dragging="onDrag"
-        @activated="changeDate"
-        @deactivated="remove_guide"
-        @resizing="onResize"
-      >
+      <vue-draggable-resizable v-for="(item,index) in layout" :w="item.place.w" :key="item.index" :h="item.place.h"
+        :x="item.place.x" :y="item.place.y" :min-width="50" :min-height="10" class="cont" :drag-index="index"
+        :snap="true" @dragging="onDrag" @activated="changeDate" @deactivated="remove_guide" @resizing="onResize">
         <div class="compent-wrap" @mouseenter="moreHandle(index)">
           <!-- 替换组件 -->
-          <component
-            :is="item.compent.compnetAlsx"
-            :is-on-resize="chartChange"
-            :chart-option="item.compent.option"
-            :chart-data="item.target.data"
-            :screen-page="item.page"
-          />
+          <component :is="item.component.ui" :is-on-resize="chartChange" :chart-option="item.component.option"
+            :chart-data="item.target" :screen-page="item.page" />
           <!-- <img :src="item.compent.url" alt=""> -->
           <div v-show="removeChart==index" class="compent-btns">
             <el-button type="danger" icon="el-icon-delete" circle @click.prevent="remove(index)" />
@@ -54,97 +35,116 @@
 </template>
 
 <script>
-//  自定义修改vue-draggable-resizable
-import VueDraggableResizable from '@/components/VueDragReize/components/vue-draggable-resizable'
-import '@/components/VueDragReize/components/vue-draggable-resizable.css'
-import yczd_screen from './layout.js'
-export default {
-  name: 'DragLayout',
-  components: {
-    VueDraggableResizable
+  //  自定义修改vue-draggable-resizable
+  import VueDraggableResizable from '@/components/VueDragReize/components/vue-draggable-resizable';
 
-  },
-  props: ['layoutData'],
-  data() {
-    return {
-      chartChange: false,
-      removeChart: null,
-      proLayout: {
-        packs: [],
-        option: {
-          animation: 0,
-          group: {
-            name: 'layoutPack',
-            pull: 'clone',
-            put: false
+  import '@/components/VueDragReize/components/vue-draggable-resizable.css';
+
+
+  export default {
+    name: 'DragLayout',
+    components: {
+      VueDraggableResizable
+    },
+    props: ['layoutData'],
+    data() {
+      return {
+        chartChange: false,
+        removeChart: null,
+        proLayout: {
+          packs: [],
+          option: {
+            animation: 0,
+            group: {
+              name: 'layoutPack',
+              pull: 'clone',
+              put: false
+            }
           }
-        }
-      },
-      // 辅助线部分
-      guide: null,
-      layout: []
+        },
+        // 辅助线部分
+        guide: null,
+        layout: [
 
-    }
-  },
-  watch: {
-    layoutData() {
+          // {
+          //   target: {
+          //     id: 1,
+          //     content: "",
+          //   },
+          //   componentType: {
+          //     id: "",
+          //     categoryName: ""
+          //   },
+          //   component: {
+          //     ui: "line-one",
+          //     option: [],
+
+          //   },
+          //   place: {
+          //     w: 200,
+          //     h: 200,
+          //     x: 100,
+          //     y: 100
+          //   }
+          // }
+
+]
+
+      }
+    },
+   
+    watch: {
+      layoutData() {
+        this.layout = this.layoutData
+      }
+    },
+    mounted() {
       this.layout = this.layoutData
-    }
-  },
-  mounted() {
-    this.layout = this.layoutData
-  },
-
-  methods: {
-    prew() {
-      this.$router.push({
-        path: '/screen'
-      })
-      localStorage.setItem('testLayout', JSON.stringify(this.layout))
     },
-    changeDate(index) {
-      //  向模板组件传递echart所存在的位置
 
-      //  console.log(index);
+    methods: {
+      changeDate(index) {
+        this.$emit('reciveIndex', index);
+        this.guide = index;
+      },
 
-      this.$emit('reciveIndex', index)
 
-      this.guide = index
+      // 调整组件大小
 
-      //  console.log("传递激活索引");
+      onResize(x, y, width, height, dragIndex) {
+        // 触发drag div 布局变化重绘图表
+        this.chartChange = !this.chartChange
+        this.layout[dragIndex].place.x = x
+        this.layout[dragIndex].place.y = y
+        this.layout[dragIndex].place.w = width
+        this.layout[dragIndex].place.h = height
+      },
 
-      // console.log(this.layout);
-    },
-    // 获取索引
-    onResize(x, y, width, height, dragIndex) {
-      // 触发drag div 布局变化重绘图表
-      this.chartChange = !this.chartChange
-      this.layout[dragIndex].place.x = x
-      this.layout[dragIndex].place.y = y
-      this.layout[dragIndex].place.w = width
-      this.layout[dragIndex].place.h = height
-    },
-    onDrag(x, y, dragIndex) {
-      this.layout[dragIndex].place.x = x
-      this.layout[dragIndex].place.y = y
-    },
-    moreHandle(index) {
-      this.removeChart = index
-      console.log('执行删除操作')
-      //  this.layout.splice(index, 1);
-    },
-    remove(dragIndex) {
-      console.log(dragIndex)
-      this.guide = null
-      this.layout.splice(dragIndex, 1)
-    },
-    remove_guide() {
+      // 拖拽组件
+
+      onDrag(x, y, dragIndex) {
+        this.layout[dragIndex].place.x = x
+        this.layout[dragIndex].place.y = y
+      },
+      moreHandle(index) {
+        this.removeChart = index;
+        //  this.layout.splice(index, 1);
+      },
+      remove(dragIndex) {
+
+        this.guide = null
+        this.layout.splice(dragIndex, 1)
+      },
+
       // 清除辅助线
-      this.guide = null
-    }
 
+      remove_guide() {
+
+        this.guide = null
+      }
+
+    }
   }
-}
 
 </script>
 

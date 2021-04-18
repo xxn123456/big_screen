@@ -1,25 +1,31 @@
 import request from '@/utils/request'
 
-// 储存布局信息
-export function saveLayout(data) {
+// 查询所有组件类别
+
+export function findAllComponentType(data) {
   return request({
-    url: '/manage/bigScreen/saveBigScreenLayout', // 假地址 自行替换
-    method: 'post',
+    url: '/componentType/findAllComponentType', // 假地址 自行替换
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
     data
   })
 }
 
-// 获取大屏布局详情
+// 根据组件类型查找组件
 
-export function getLayout(data) {
-    return request({
-      url: '/manage/bigScreen/getBigScreenById', // 假地址 自行替换
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data
-    })
-  }
+export function findComponentByType(data) {
+  return request({
+    url: '/component/findComponentByType',
+    // 此处admin是代理
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+
 
 

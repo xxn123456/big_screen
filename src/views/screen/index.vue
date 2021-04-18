@@ -41,7 +41,7 @@
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">设计界面</el-button>
+            <el-button size="mini" @click="preScreen(scope.row.id)">设计界面</el-button>
 
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -244,6 +244,10 @@
           })
         })
 
+      },
+      preScreen(id){
+            console.log("路由进行跳转",id)
+            this.$router.push({path:'/produceScreen',query: {id:id}})
       },
       handleAdd() {
         this.cleanRow();
