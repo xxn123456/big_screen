@@ -1,189 +1,171 @@
 <template>
-  <div ref="Line" class="chart-wrap" />
+  <div ref="Line" class="chart-wrap"></div>
 </template>
 
 <script>
-// 基础折线图
-export default {
-  name: 'LineOne',
-  props: ['chartOption', 'chartData', 'isOnResize'],
-  data() {
-    return {
-      option: {},
-      target: {}
-    }
-  },
-  watch: {
-    option() {
-      this.dragNewChart()
-    },
-    chartData() {
-      // console.log("数据发送变化");
-      this.option = this.chartOption
-      this.target = this.chartData
-
-      this.dragNewChart()
-    },
-    isOnResize() {
-      // console.log("重绘图表");
-      const myChart = this.$echarts.init(this.$refs.Line)
-      myChart.resize()
-      this.dragNewChart()
-    }
-  },
-
-  mounted() {
-    this.init()
-  },
-  methods: {
-    dragChart() {
-      const myChart = this.$echarts.init(this.$refs.Line)
-      myChart.resize()
-      const options = {
-        backgroundColor: '',
-        title: {
-          text: '武汉市2020上半年消费水平',
-          textStyle: {
-            align: 'center',
-            color: '#fff',
-            fontSize: 16
-          },
-          left: 'center'
-        },
-        legend: {
-          bottom: 0,
-          data: ['消费水平'],
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        xAxis: {
-          type: 'category',
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: '#fff'
-            }
-          },
-          axisTick: {
-            show: true,
-            lineStyle: {
-              color: '#616582'
-            }
-          },
-          data: ['一月', '二月', '三月', '四月', '五月', '六月']
-        },
-        yAxis: {
-          type: 'value',
-          name: '/元',
-          axisLine: {
-            show: false,
-            lineStyle: {
-              color: '#fff'
-            }
-          },
-          axisTick: {
-            show: true,
-            lineStyle: {
-              color: '#616582'
-            }
-          },
-          splitLine: {
-            show: false
-          }
-
-        },
-        series: [{
-          name: '消费水平',
-          type: 'line',
-          showAllSymbol: true,
-          symbol: 'circle',
-          symbolSize: 8,
-          lineStyle: {
-            normal: {
-              color: '#6c50f3',
-              shadowBlur: 0
-            }
-          },
-          label: {
-            show: true,
-            position: 'top',
-            textStyle: {
-              color: '#6c50f3'
-            }
-          },
-          itemStyle: {
-            color: '#6c50f3',
-            borderColor: '#fff',
-            borderWidth: 3,
-            shadowColor: 'rgba(0, 0, 0, .3)',
-            shadowBlur: 0,
-            shadowOffsetY: 2,
-            shadowOffsetX: 2
-          },
-          tooltip: {
-            show: false
-          },
-          areaStyle: {
-            normal: {
-              color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(108,80,243,0.3)'
-              },
-              {
-                offset: 1,
-                color: 'rgba(108,80,243,0)'
-              }
-              ], false),
-              shadowColor: 'rgba(108,80,243, 0.9)',
-              shadowBlur: 20
-            }
-          },
-          data: [820, 932, 901, 934, 1290, 1330]
-        }]
-
+  // 基础折线图
+  export default {
+    name: 'LineOne',
+    props: ['chartOption', 'chartData', 'isOnResize'],
+    data() {
+      return {
+        Option: {},
+        timeOut: null
       }
 
-      myChart.setOption(options)
     },
-    dragNewChart() {
-      const myChart = this.$echarts.init(this.$refs.Line)
-      myChart.resize()
-      const new_target = this.target.chartData[0].data
-      const x = []
-      const y = []
-      new_target.forEach((item, index) => {
-        x.push(item.name)
-        y.push(item.value)
-      })
-      // 修改标题
-      this.option.title.text = this.target.title
+    watch: {
 
-      // 修改指标值
-      this.option.legend.data = this.target.chartData[0].target
+      chartData() {
 
-      this.option.series[0].name = this.target.chartData[0].target
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
 
-      // 修改单位
-      console.log(new_target)
-      this.option.yAxis.name = this.target.chartData[0].unit
+        })
+      },
+      isOnResize() {
 
-      this.option.xAxis.data = x
-      this.option.series[0].data = y
-      const options = this.option
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+        })
 
-      console.log('新option')
-      myChart.setOption(options)
+      }
     },
-    init() {
-      this.dragChart()
-      // 图表发生变化无论是option 还是data 都会引起
-      this.option = this.chartOption
 
-      this.target = this.chartData
+    mounted() {
+      this.init()
+    },
+    methods: {
+      debounce(fn) {
+      
+        if (this.timeOut) clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          fn
+        }, 1000);
+      },
+      dragChart() {
+        const myChart = this.$echarts.init(this.$refs.Line);
+        myChart.resize();
+        const options = {
+          backgroundColor: '',
+          title: {
+            text: '武汉市2020上半年消费水平',
+            textStyle: {
+              align: 'center',
+              color: '#fff',
+              fontSize: 16
+            },
+            left: 'center'
+          },
+          legend: {
+            bottom: 0,
+            data: ['消费水平'],
+            textStyle: {
+              color: '#fff'
+            }
+          },
+          xAxis: {
+            type: 'category',
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: '#fff'
+              }
+            },
+            axisTick: {
+              show: true,
+              lineStyle: {
+                color: '#616582'
+              }
+            },
+            data: ['一月', '二月', '三月', '四月', '五月', '六月']
+          },
+          yAxis: {
+            type: 'value',
+            name: '/元',
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: '#fff'
+              }
+            },
+            axisTick: {
+              show: true,
+              lineStyle: {
+                color: '#616582'
+              }
+            },
+            splitLine: {
+              show: false
+            }
+
+          },
+          series: [{
+            name: '消费水平',
+            type: 'line',
+            showAllSymbol: true,
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+              normal: {
+                color: '#6c50f3',
+                shadowBlur: 0
+              }
+            },
+            label: {
+              show: true,
+              position: 'top',
+              textStyle: {
+                color: '#6c50f3'
+              }
+            },
+            itemStyle: {
+              color: '#6c50f3',
+              borderColor: '#fff',
+              borderWidth: 3,
+              shadowColor: 'rgba(0, 0, 0, .3)',
+              shadowBlur: 0,
+              shadowOffsetY: 2,
+              shadowOffsetX: 2
+            },
+            tooltip: {
+              show: false
+            },
+            areaStyle: {
+              normal: {
+                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgba(108,80,243,0.3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(108,80,243,0)'
+                  }
+                ], false),
+                shadowColor: 'rgba(108,80,243, 0.9)',
+                shadowBlur: 20
+              }
+            },
+            data: [820, 932, 901, 934, 1290, 1330]
+          }]
+
+        };
+        myChart.setOption(options)
+      },
+      dragNewChart() {
+        console.log("绘制新图")
+        const myChart = this.$echarts.init(this.$refs.Line)
+        myChart.resize();
+        myChart.setOption(this.Option);
+      },
+      init() {
+        this.$nextTick(() => {
+          this.dragChart();
+        });
+        this.Option = JSON.parse(this.chartOption);
+      }
     }
   }
-}
 
 </script>
 

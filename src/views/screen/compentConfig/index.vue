@@ -1,12 +1,10 @@
 <script>
   import configText from "@/views/screen/compentConfig/configText.vue";
+  import configChart from "@/views/screen/compentConfig/configChart.vue";
+  import configImg from "@/views/screen/compentConfig/configImg.vue";
+  import configTable from "@/views/screen/compentConfig/configTable.vue";
   export default {
-    data: {
-      return: {
-        TEXT_C: ["text", "input"]
-      }
 
-    },
     props: {
       componentType: {
         type: String,
@@ -14,14 +12,45 @@
         default: "text"
       }
     },
-    components:{
-        configText
+    components: {
+      configText,
+      configChart,
+      configImg,
+      configTable
+
     },
     render: function (createElement) {
-     return createElement(
+      if (this.componentType == "文字") {
+        return createElement(
           'config-text',
-           this.$slots.default
+          this.$slots.default
         )
+
+      }
+      if (this.componentType == "图片") {
+        return createElement(
+          'config-img',
+          this.$slots.default
+        )
+
+      }
+
+      if (this.componentType == "折线图"||this.componentType == "柱状图"||this.componentType == "饼图"||this.componentType == "雷达图"||this.componentType == "地图") {
+        return createElement(
+          'config-chart',
+          this.$slots.default
+        )
+
+      }
+
+      if (this.componentType == "表格") {
+        return createElement(
+          'config-table',
+          this.$slots.default
+        )
+
+      }
+
 
     },
   }

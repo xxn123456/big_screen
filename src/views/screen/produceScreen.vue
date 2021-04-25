@@ -6,7 +6,7 @@
             class="el-icon-document" /></span>
       </div>
       <div class="compnets-change">
-        <span v-for="item in componentTypes" :key="item.id">{{item.categoryName}}</span>
+        <span v-for="item in componentTypes" :key="item.id" @click="changeAllCompent(item.id)">{{item.categoryName}}</span>
       </div>
       <div class="layout-handle">
         <span @click="saveLayout"><i class="el-icon-document-checked" />保存</span>
@@ -28,7 +28,8 @@
 
               <div class="compent">
 
-                <div v-for="s in components" :key="s.index" class="compent-block">
+                <div v-for="s in components" :key="s.index" class="compent-block" draggable="true"
+                  @dragstart="dragstartHandler($event,s)">
                   <img :src="s.component_pic|imgfitter" alt="">
                 </div>
 
@@ -76,7 +77,7 @@
         <div class="layout-main">
           <vue-ruler-tool :content-layout="{left:50,top:50}" :is-scale-revise="true">
 
-            <div class="pc-mb">
+            <div class="pc-mb" @dragover="onDragOver($event)" @drop="compent_enter($event)" >
 
               <tem-one :layout-data="layout" @reciveIndex="setTargetAndCss" />
 
@@ -101,11 +102,11 @@
         <div class="cont">
           <!-- 其他数据项操作 -->
 
-               <config-dig></config-dig>
-          
-          
+          <config-dig :componentType="now_config"></config-dig>
 
-         
+
+
+
 
         </div>
       </div>
@@ -114,12 +115,12 @@
 </template>
 <script>
   // 导入图片失败地址
-  import TemOne from '@/views/users/createLayout.vue'
+  import TemOne from '@/views/screen/createLayout.vue'
   import IMGURL from '@/utils/setDeafult.js'
   import VueRulerTool from '@/components/VueRuler/components/vue-ruler-tool.vue'
   import qs from 'querystring'
 
-  
+
   import configDig from "@/views/screen/compentConfig/index.vue";
 
   import {
@@ -145,30 +146,30 @@
         activeComponentTypeId: null,
         components: [],
         // 模板项目
-        layout: [{
-          target: {
-            id: 1,
-            content: "",
-          },
-          componentType: {
-            id: "",
-            categoryName: ""
-          },
-          component: {
-            ui: "line-one",
-            option: [],
+        layout: [
+          // {
+          //   target: {
+          //     id: 1,
+          //     content: "",
+          //   },
+          //   component: {
+          //     ui: "line-one",
+          //     option: [],
 
-          },
-          place: {
-            w: 200,
-            h: 200,
-            x: 100,
-            y: 100
-          }
-        },
-        
+          //   },
+          //   place: {
+          //     w: 200,
+          //     h: 200,
+          //     x: 100,
+          //     y: 100
+          //   }
+          // },
+
         ],
-     
+        // 组件拖拽中途数据储存
+
+        dataTransfer: null,
+
         // 布局中组件存在位置
         packIndex: null,
         scaleNum: 0,
@@ -177,6 +178,7 @@
           w: 1920,
           h: 1080
         },
+        now_config:null,
 
         nowChart: {
 
@@ -191,6 +193,14 @@
 
     },
     methods: {
+      // 切换所有组件
+      changeAllCompent(id){
+        this.activeComponentTypeId=id;
+
+        this.findComponentByType();
+
+
+      },
 
       // 查询所有组件类别
 
@@ -254,6 +264,38 @@
 
       },
 
+      dragstartHandler(ev, val) {
+
+        console.log("开始拖到")
+        this.dataTransfer = val;
+      },
+      onDragOver(ev) {
+    
+        ev.preventDefault();
+      },
+
+      compent_enter(ev) {
+
+
+    
+
+
+        this.layout.push({
+          target: {
+            id: 1,
+            content: "",
+          },
+          component: this.dataTransfer,
+          place: {
+            w: 200,
+            h: 200,
+            x: 100,
+            y: 100
+          }
+        })
+      },
+
+
       addChartTarget(x) {
         const new_pack = {
           compent: {
@@ -284,7 +326,10 @@
       // 相应拖拽布局点击组件索引
 
       setTargetAndCss(x) {
-        console.log("知道被拖拽的组件索引", x)
+        console.log("知道被拖拽的组件索引", x);
+
+        this.now_config=this.layout[x].component.component_type.categoryName;
+
 
         // 调试用法
         // this.nowChart = this.layout[x];
@@ -366,6 +411,7 @@
         height: 100%;
         font-size: 12px;
         font-weight: bold;
+        cursor: pointer;
 
         span {
           margin-left: 15px;

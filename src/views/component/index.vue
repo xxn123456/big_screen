@@ -78,7 +78,7 @@
 
         <el-form-item label="组件预览图">
           <el-upload class="upload-demo" action="http://localhost:3000/component/upload" multiple :limit="1"
-            :file-list="fileList" :on-success="uploadSuccess" show-file-list="false">
+            :file-list="fileList" :on-success="uploadSuccess">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -86,7 +86,7 @@
 
         <el-form-item label="组件预览图">
 
-          <prism-editor class="my-editor height-300" v-model="code" :highlight="highlighter"
+          <prism-editor class="my-editor height-300" v-model="form.code" :highlight="highlighter"
             :line-numbers="lineNumbers"></prism-editor>
 
         </el-form-item>
@@ -130,12 +130,13 @@
           time: "",
           name: ""
         },
-        code: "",
+        
         lineNumbers: true,
         multipleSelection: [],
         form: {
           id: "",
           name: null,
+          code: null,
           other_name: null,
           component_type: null,
           component_pic: null,
@@ -156,8 +157,6 @@
     },
     mounted() {
       this.findAll();
-      let test = new Date('2017-2-1').getTime();
-      console.log("转换的时间", test)
     },
     components: {
       PrismEditor
@@ -198,7 +197,8 @@
                 other_name: el.other_name,
                 component_type: el.component_type,
                 component_pic: el.component_pic,
-                createdAt: el.createdAt
+                createdAt: el.createdAt,
+                 option:el.option
               }
             })
             this.tableData = new_list;
@@ -297,7 +297,8 @@
                 other_name: el.other_name,
                 component_type: el.component_type,
                 component_pic: el.component_pic,
-                createdAt: el.createdAt
+                createdAt: el.createdAt,
+                option:el.option
               }
             })
             this.tableData = new_list;
@@ -325,6 +326,7 @@
       let new_row = Object.assign({}, row);
       this.form.id = new_row.id;
       this.form.name = new_row.name;
+      this.form.code= new_row.option;
       this.form.other_name = new_row.other_name;
       this.form.component_type =new_row.component_type.id;
       this.form.component_pic = new_row.component_pic;
@@ -368,6 +370,7 @@
             other_name: this.form.other_name,
             component_type_id: this.form.component_type,
             component_pic: this.form.component_pic,
+            option:this.form.code
 
           });
           create(msg_create).then((res) => {
@@ -393,6 +396,7 @@
             other_name: this.form.other_name,
             component_type_id: this.form.component_type,
             component_pic: this.form.component_pic,
+            option:this.form.code
           });
           update(msg_update).then((res) => {
             let {
