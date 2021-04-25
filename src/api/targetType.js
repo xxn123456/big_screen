@@ -93,6 +93,19 @@ export function batchDel(data) {
   })
 }
 
+// 指标类型-指标联动
+export function findTypeAndTarget(data) {
+  return request({
+    url: '/targetType/findTypeAndTarget',
+    // 此处admin是代理
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    data
+  })
+}
+
 
 
 

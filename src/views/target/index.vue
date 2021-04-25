@@ -26,7 +26,7 @@
           <template slot-scope="props">
             <el-form label-position="left" class="demo-table-expand">
 
-              <el-form-item label="数据源类型">
+              <!-- <el-form-item label="数据源类型">
                 <span>{{expand_table.source_type}}</span>
               </el-form-item>
               <el-form-item label="执行语句">
@@ -41,7 +41,7 @@
 
               <el-form-item label="结果集">
                 <span>{{expand_table.content}}</span>
-              </el-form-item>
+              </el-form-item> -->
 
             </el-form>
           </template>
@@ -275,6 +275,8 @@
 
           console.log("查询到结果",result)
 
+        }else{
+          this.form.content=null;
         }
        
 
@@ -428,8 +430,8 @@
         this.form.target_type_id = new_row.target_type_id;
         this.form.source = [new_row.source,new_row.source_type.id];
         this.form.source_type=new_row.source_type;
-        this.form.sql_order = new_row.sql_order,
-        this.form.content = new_row.content
+      
+        this.form.sql_order = new_row.sql_order;
 
       },
       cleanRow() {
@@ -464,13 +466,14 @@
       submit() {
         switch (this.submitState) {
           case 0:
+            let new_cont=JSON.stringify(this.form.content.data);
             let msg_create = qs.stringify({
               title: this.form.title,
               target_type_id: this.form.target_type_id,
               source_id: this.form.source[0],
               source_type_id: this.form.source[1],
               sql_order: this.form.sql_order,
-              content: this.form.content
+              content: new_cont
             });
             create(msg_create).then((res) => {
               let {
@@ -488,6 +491,8 @@
             break;
           case 1:
 
+             let new_cont2=JSON.stringify(this.form.content.data);
+
             let msg_update = qs.stringify({
               id: this.form.id,
               title: this.form.title,
@@ -495,7 +500,7 @@
               source_id: this.form.source[0],
               source_type_id: this.form.source[1],
               sql_order: this.form.sql_order,
-              content: this.form.content
+              content: new_cont2
             });
             update(msg_update).then((res) => {
               let {

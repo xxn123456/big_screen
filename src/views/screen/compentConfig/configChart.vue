@@ -1,25 +1,60 @@
 <template>
   <div class="config">
     <div>
-    <div class="config-text">
-            图表组件
-    </div>
+      <div class="config-text">
+        图表组件
+      </div>
       <input type="text" placeholder="请输入标题" class="config-input">
+
+      <div class="config-input">
+        <el-cascader v-model="target" :options="targetOptions" placeholder="选择指标项"></el-cascader>
+      </div>
+
+
+      <div class="config-h">
+       <span @click="sure_chart">确定</span>
+      </div>
     </div>
 
   </div>
 </template>
 
+
 <script>
+  import {
+    findTypeAndTarget
+  } from "@/api/targetType.js";
   export default {
     data() {
       return {
-
+        target:[],
+        targetOptions:[]
       }
 
     },
+    mounted() {
+      this.findTypeAndTarget();
+    },
     methods: {
+      findTypeAndTarget() {
+        return new Promise((resolve, reject) => {
+          findTypeAndTarget().then((res) => {
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
 
+              this.targetOptions=data;
+
+            }
+
+          })
+        })
+      },
+      sure_chart(){
+        this.$emit('change',this.target[1]);
+      }
     }
   }
 
@@ -29,14 +64,15 @@
     width: 100%;
     min-height: 100px;
   }
-   
-  .config-text{
+
+  .config-text {
     text-align: center;
     color: #999;
     margin-top: 15px;
     margin-bottom: 15px;
 
   }
+
   .config-input {
     background-color: transparent;
     border: none;
@@ -44,8 +80,24 @@
     color: #fff;
     margin-top: 15px;
     margin-bottom: 15px;
+    font-size: 14px;
 
   }
+
+   .config-h{
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+
+
+   }
 
   ::-webkit-input-placeholder {
     /* WebKit browsers */

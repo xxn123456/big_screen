@@ -6,7 +6,8 @@
             class="el-icon-document" /></span>
       </div>
       <div class="compnets-change">
-        <span v-for="item in componentTypes" :key="item.id" @click="changeAllCompent(item.id)">{{item.categoryName}}</span>
+        <span v-for="item in componentTypes" :key="item.id"
+          @click="changeAllCompent(item.id)">{{item.categoryName}}</span>
       </div>
       <div class="layout-handle">
         <span @click="saveLayout"><i class="el-icon-document-checked" />保存</span>
@@ -77,7 +78,7 @@
         <div class="layout-main">
           <vue-ruler-tool :content-layout="{left:50,top:50}" :is-scale-revise="true">
 
-            <div class="pc-mb" @dragover="onDragOver($event)" @drop="compent_enter($event)" >
+            <div class="pc-mb" @dragover="onDragOver($event)" @drop="compent_enter($event)">
 
               <tem-one :layout-data="layout" @reciveIndex="setTargetAndCss" />
 
@@ -102,7 +103,7 @@
         <div class="cont">
           <!-- 其他数据项操作 -->
 
-          <config-dig :componentType="now_config"></config-dig>
+          <config-dig :componentType="now_config" @change="sure_config"></config-dig>
 
 
 
@@ -125,8 +126,14 @@
 
   import {
     findAllComponentType,
-    findComponentByType
+    findComponentByType,
+    update,
+    findScreen
   } from "@/api/layout.js";
+
+  import {
+    findOne
+  } from "@/api/target.js";
 
   export default {
     components: {
@@ -166,6 +173,7 @@
           // },
 
         ],
+        screen_id: null,
         // 组件拖拽中途数据储存
 
         dataTransfer: null,
@@ -178,24 +186,27 @@
           w: 1920,
           h: 1080
         },
-        now_config:null,
-
-        nowChart: {
-
-        }
+        // 当前是哪一个配置窗
+        now_config: null,
+        // 当前是哪一个组件
+        now_compent: null,
       }
     },
     mounted() {
       this.userId = this.$route.query.userId;
 
+      this.screen_id = this.$route.query.id;
+
       this.findAllComponentType();
+
+      this.findScreen();
 
 
     },
     methods: {
       // 切换所有组件
-      changeAllCompent(id){
-        this.activeComponentTypeId=id;
+      changeAllCompent(id) {
+        this.activeComponentTypeId = id;
 
         this.findComponentByType();
 
@@ -270,14 +281,43 @@
         this.dataTransfer = val;
       },
       onDragOver(ev) {
-    
+
         ev.preventDefault();
+      },
+
+      // 配置项传递的值
+
+      sure_config(val) {
+
+        return new Promise((resolve, reject) => {
+          let msg = qs.stringify({
+            id: val
+          })
+
+          findOne(msg).then((res) => {
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
+
+              this.layout[this.now_compent].target = data;
+
+
+            } else {
+              this.$message("查询失败")
+            }
+          })
+
+        })
+
+
       },
 
       compent_enter(ev) {
 
 
-    
+
 
 
         this.layout.push({
@@ -326,13 +366,8 @@
       // 相应拖拽布局点击组件索引
 
       setTargetAndCss(x) {
-        console.log("知道被拖拽的组件索引", x);
-
-        this.now_config=this.layout[x].component.component_type.categoryName;
-
-
-        // 调试用法
-        // this.nowChart = this.layout[x];
+        this.now_config = this.layout[x].component.component_type.categoryName;
+        this.now_compent = x;
       },
       // 填写指标数据到布局
       saveScreenTitle() {
@@ -343,7 +378,65 @@
       saveChartTarget() {
 
       },
+
+      findScreen() {
+        return new Promise((resolve, reject) => {
+          let msg = qs.stringify({
+            id: this.screen_id
+          });
+
+          findScreen(msg).then((res) => {
+
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
+
+              let bb = JSON.parse(data.layout);
+
+              console.log("解析出来的数据", bb)
+              this.layout = bb;
+            } else {
+              this.$message("获取当前大屏布局失败")
+            }
+
+          })
+
+        })
+
+
+
+      },
       saveLayout() {
+
+        return new Promise((resolve, reject) => {
+
+          let msg = qs.stringify({
+            id: this.screen_id,
+            layout: JSON.stringify(this.layout)
+          })
+
+          update(msg).then((res) => {
+
+            let {
+              code,
+              data
+            } = res;
+            if (code == "200") {
+              this.$message("更新大屏布局成功")
+            } else {
+              this.$message("更新大屏布局s失败")
+            }
+
+          })
+
+        })
+
+
+
+
+
 
       },
       // 查询所有组件类型

@@ -4,7 +4,6 @@
   import configImg from "@/views/screen/compentConfig/configImg.vue";
   import configTable from "@/views/screen/compentConfig/configTable.vue";
   export default {
-
     props: {
       componentType: {
         type: String,
@@ -12,6 +11,7 @@
         default: "text"
       }
     },
+
     components: {
       configText,
       configChart,
@@ -20,6 +20,7 @@
 
     },
     render: function (createElement) {
+      let _this = this;
       if (this.componentType == "文字") {
         return createElement(
           'config-text',
@@ -38,6 +39,17 @@
       if (this.componentType == "折线图"||this.componentType == "柱状图"||this.componentType == "饼图"||this.componentType == "雷达图"||this.componentType == "地图") {
         return createElement(
           'config-chart',
+          {
+              on:{
+                    change(val){
+
+                      _this.$emit("change",val)
+
+                     
+
+                    }
+              }
+          },
           this.$slots.default
         )
 

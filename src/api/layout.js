@@ -27,5 +27,31 @@ export function findComponentByType(data) {
   })
 }
 
+export function update(data) {
+  return request({
+    url: '/screen/update',
+    // 此处admin是代理
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+
+
+export function findScreen(data) {
+  return request({
+    url: 'screen/findOne',
+    // 此处admin是代理
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+
+
 
 
