@@ -1,27 +1,57 @@
 <template>
-  <div class="chart-wrap" ref="Bar">
-
-  </div>
+  <div ref="Line" class="chart-wrap"></div>
 </template>
 
 <script>
-  // 双折线图
+  // 基础折线图
   export default {
-    name: "BarFour",
-    props: ['chartOption', 'chartData'],
+    name: 'BarFour',
+    props: ['chartOption', 'chartData', 'isOnResize'],
     data() {
       return {
-        option: {
+        timeOut: null
+      }
 
-        },
-        target: {
+    },
+    watch: {
 
-        }
+      chartOption() {
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+
+      },
+      chartData() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+      },
+      isOnResize() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+        })
+
       }
     },
+
+    mounted() {
+      this.init()
+    },
     methods: {
+      debounce(fn) {
+
+        if (this.timeOut) clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          fn
+        }, 1000);
+      },
       dragChart() {
-        let myChart = this.$echarts.init(this.$refs.Bar)
+        const myChart = this.$echarts.init(this.$refs.Line);
+        myChart.resize();
         let options = {
           backgroundColor: '',
           title: {
@@ -79,7 +109,7 @@
           }],
           yAxis: [{
             name: "/万元",
-            type:"value",
+            type: "value",
             nameTextStyle: {
               color: "#fff",
 
@@ -143,7 +173,7 @@
                 normal: {
                   color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                     color: 'rgba(165,130,234,1)'
+                    color: 'rgba(165,130,234,1)'
                   }, {
                     offset: 1,
                     color: '#bf19ff'
@@ -165,61 +195,20 @@
           ]
 
         };
-        // console.log(JSON.stringify(options));
+
         myChart.setOption(options)
+      },
+      dragNewChart() {
+        const myChart = this.$echarts.init(this.$refs.Line)
+        myChart.resize();
+        myChart.setOption(this.chartOption);
       },
       init() {
-
-        this.option = this.chartOption;
-
-        this.target = this.chartData;
-
-
-
-      },
-    },
-    watch: {
-      option() {
-        let myChart = this.$echarts.init(this.$refs.Bar);
-
-        let new_target = this.target.chartData[0].data;
-
-        let x = [];
-        let y = [];
-
-        new_target.forEach((item, index) => {
-          x.push(item.name);
-          y.push(item.value);
+        this.$nextTick(() => {
+          this.dragChart();
         });
 
-        // 修改标题
-        this.option.title.text = this.target.title;
-
-        // 修改指标值
-        this.option.legend.data = this.target.chartData[0].target;
-
-        this.option.series[0].name = this.target.chartData[0].target;
-
-        // 修改单位
-        console.log(new_target);
-        this.option.yAxis.name = this.target.chartData[0].unit;
-
-
-        this.option.xAxis.data = x;
-        this.option.series[0].data = y;
-        let options = this.option;
-
-        console.log("新option");
-
-
-        myChart.setOption(options)
       }
-    },
-
-    mounted() {
-      this.dragChart();
-      this.init();
-
     }
   }
 

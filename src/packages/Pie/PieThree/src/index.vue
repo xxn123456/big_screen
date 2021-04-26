@@ -1,46 +1,59 @@
 <template>
-  <div ref="Pie" class="chart-wrap" />
+  <div ref="Line" class="chart-wrap"></div>
 </template>
 
 <script>
-// 基础折线图
-export default {
-  name: 'PieThree',
-  props: ['chartOption', 'chartData', 'isOnResize'],
-  data() {
-    return {
-      option: {
+  // 基础折线图
+  export default {
+    name: 'PieThree',
+    props: ['chartOption', 'chartData', 'isOnResize'],
+    data() {
+      return {
+        timeOut: null
+      }
+
+    },
+    watch: {
+
+      chartOption() {
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
 
       },
-      target: {
+
+      chartData() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+      },
+      isOnResize() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+        })
 
       }
-    }
-  },
-  watch: {
-    option() {
-      this.dragNewChart()
     },
-    chartData() {
-      // console.log("数据发送变化");
-      this.option = this.chartOption
-      this.target = this.chartData
 
-      this.dragNewChart()
+    mounted() {
+      this.init()
     },
-    isOnResize() {
-      this.dragNewChart()
-    }
-  },
+    methods: {
+      debounce(fn) {
 
-  mounted() {
-    this.init()
-  },
-  methods: {
-    dragChart() {
-      const myChart = this.$echarts.init(this.$refs.Pie)
-      myChart.resize()
-      const options = {
+        if (this.timeOut) clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          fn
+        }, 1000);
+      },
+      dragChart() {
+        const myChart = this.$echarts.init(this.$refs.Line);
+        myChart.resize();
+       let options = {
         backgroundColor: '',
         // 标题预留
         title: {
@@ -132,48 +145,23 @@ export default {
         }]
 
       }
-      console.log(JSON.stringify(options))
 
-      myChart.setOption(options)
-    },
-    dragNewChart() {
-      const myChart = this.$echarts.init(this.$refs.Pie)
-      myChart.resize()
 
-      console.log(this.target)
+        myChart.setOption(options)
+      },
+      dragNewChart() {
+        const myChart = this.$echarts.init(this.$refs.Line)
+        myChart.resize();
+        myChart.setOption(this.chartOption);
+      },
+      init() {
+        this.$nextTick(() => {
+          this.dragChart();
+        });
 
-      // 修改标题
-      this.option.title.text = this.target.title
-      // 修改单位
-
-      this.option.title.subtext = this.target.chartData[0].unit
-
-      const new_target = this.target.chartData[0].data
-
-      console.log(new_target)
-
-      const x = []
-
-      new_target.forEach((item, index) => {
-        x.push(item.name)
-      })
-
-      this.option.legend.data = x
-
-      this.option.series[0].data = new_target
-
-      const options = this.option
-
-      myChart.setOption(options)
-    },
-    init() {
-      this.dragChart()
-      // 图表发生变化无论是option 还是data 都会引起
-      this.option = this.chartOption
-      this.target = this.chartData
+      }
     }
   }
-}
 
 </script>
 

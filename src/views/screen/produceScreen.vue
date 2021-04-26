@@ -194,7 +194,7 @@
         prod_new_config: null,
       }
     },
-   
+
     mounted() {
       this.userId = this.$route.query.userId;
 
@@ -208,7 +208,7 @@
     },
     methods: {
 
-   
+
       // 切换所有组件
       changeAllCompent(id) {
         this.activeComponentTypeId = id;
@@ -335,7 +335,9 @@
 
               this.layout[this.now_compent].base.title = config.title;
 
-                this.prod_chart();
+              this.layout[this.now_compent].base.targetNames = config.targetNames
+
+              this.prod_chart();
 
 
 
@@ -350,10 +352,12 @@
 
       },
 
-         prod_chart(){
+      prod_chart() {
         let component_id = this.layout[this.now_compent].component.id;
         let target_id = this.layout[this.now_compent].target.id;
         let base = this.layout[this.now_compent].base;
+
+
 
 
 
@@ -363,7 +367,8 @@
           let msg = qs.stringify({
             "componet_id": component_id,
             "target_id": target_id,
-             "title": base.title
+            "title": base.title,
+            "targetNames": base.targetNames
           });
 
           prod_option(msg).then((res) => {
@@ -418,7 +423,7 @@
 
               let bb = JSON.parse(data.layout);
 
-            
+
               this.layout = bb;
             } else {
               this.$message("获取当前大屏布局失败")

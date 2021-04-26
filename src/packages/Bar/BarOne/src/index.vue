@@ -1,27 +1,57 @@
 <template>
-  <div class="chart-wrap" ref="Bar">
-
-  </div>
+  <div ref="Line" class="chart-wrap"></div>
 </template>
 
 <script>
   // 基础折线图
   export default {
-    name: "BarOne",
-    props: ['chartOption', 'chartData','isOnResize'],
+    name: 'BarOne',
+    props: ['chartOption', 'chartData', 'isOnResize'],
     data() {
       return {
-        option: {
+        timeOut: null
+      }
 
-        },
-        target: {
+    },
+    watch: {
 
-        }
+      chartOption() {
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+
+      },
+
+      chartData() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+      },
+      isOnResize() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+        })
+
       }
     },
+
+    mounted() {
+      this.init()
+    },
     methods: {
+      debounce(fn) {
+
+        if (this.timeOut) clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          fn
+        }, 1000);
+      },
       dragChart() {
-        let myChart = this.$echarts.init(this.$refs.Bar);
+        const myChart = this.$echarts.init(this.$refs.Line);
         myChart.resize();
         let options = {
           backgroundColor: '',
@@ -132,83 +162,20 @@
           }]
 
         };
-        // console.log(JSON.stringify(options));
+
         myChart.setOption(options)
       },
       dragNewChart() {
-        let myChart = this.$echarts.init(this.$refs.Bar);
-          myChart.resize();
-
-        let new_target = this.target.chartData[0].data;
-
-        let x = [];
-        let y = [];
-
-        new_target.forEach((item, index) => {
-          x.push(item.name);
-          y.push(item.value);
-        });
-
-        // 修改标题
-        this.option.title.text = this.target.title;
-
-        // 修改指标值
-        this.option.legend.data = this.target.chartData[0].target;
-
-        this.option.series[0].name = this.target.chartData[0].target;
-
-        // 修改单位
-        console.log(new_target);
-        this.option.yAxis.name = this.target.chartData[0].unit;
-
-
-        this.option.xAxis.data = x;
-        this.option.series[0].data = y;
-        let options = this.option;
-
-        console.log("新option");
-
-
-        myChart.setOption(options)
+        const myChart = this.$echarts.init(this.$refs.Line)
+        myChart.resize();
+        myChart.setOption(this.chartOption);
       },
       init() {
-
+        this.$nextTick(() => {
           this.dragChart();
-        // 图表发生变化无论是option 还是data 都会引起
-         this.option = this.chartOption;
-         
-         this.target = this.chartData;
-      
+        });
 
-
-
-      },
-    },
-    watch: {
-
-      option() {
-
-        this.dragNewChart();
-      },
-      chartData() {
-        // console.log("数据发送变化");
-        this.option = this.chartOption;
-        this.target = this.chartData;
-
-        this.dragNewChart();
-
-      },
-      isOnResize() {
-        
-      
-        this.dragNewChart();
       }
-    },
-
-    mounted() {
-    
-      this.init();
-
     }
   }
 

@@ -34,9 +34,12 @@
           this.$slots.default
         )
 
+
       }
 
-      if (this.componentType == "折线图"||this.componentType == "柱状图"||this.componentType == "饼图"||this.componentType == "雷达图"||this.componentType == "地图") {
+
+
+      if (this.componentType == "折线图"||this.componentType == "柱状图"||this.componentType == "横向柱状图"||this.componentType == "扇形图"||this.componentType == "雷达图"||this.componentType == "地图") {
         return createElement(
           'config-chart',
           {

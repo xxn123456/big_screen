@@ -207,14 +207,12 @@
           ]
 
         };
-
-        console.log("配置项",JSON.stringify(options))
         myChart.setOption(options)
       },
       dragNewChart() {
         const myChart = this.$echarts.init(this.$refs.Line)
         myChart.resize();
-        myChart.setOption(this.chartOption);
+       myChart.setOption(this.chartOption);
       },
       init() {
         this.$nextTick(() => {

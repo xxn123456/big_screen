@@ -1,27 +1,58 @@
 <template>
-  <div class="chart-wrap" ref="Line">
-
-  </div>
+  <div ref="Line" class="chart-wrap"></div>
 </template>
 
 <script>
-  // 三折线图
+  // 基础折线图
   export default {
-    name: "LineFour",
-    props: ['chartOption', 'chartData','isOnResize'],
+    name: 'LineFour',
+    props: ['chartOption', 'chartData', 'isOnResize'],
     data() {
       return {
-        option: {},
-        target: {
-
-        }
+        timeOut: null
       }
 
     },
+    watch: {
+
+      chartOption() {
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+
+      },
+
+      chartData() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+      },
+      isOnResize() {
+
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+        })
+
+      }
+    },
+
+    mounted() {
+      this.init()
+    },
     methods: {
+      debounce(fn) {
+
+        if (this.timeOut) clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          fn
+        }, 1000);
+      },
       dragChart() {
-        let myChart = this.$echarts.init(this.$refs.Line);
-         myChart.resize();
+        const myChart = this.$echarts.init(this.$refs.Line);
+        myChart.resize();
         let options = {
           backgroundColor: '',
           title: {
@@ -226,101 +257,19 @@
 
         }
 
-        console.log(JSON.stringify(options));
-
         myChart.setOption(options)
       },
-      dragNewChart(){
-         let myChart = this.$echarts.init(this.$refs.Line);
-          myChart.resize();
-
-        // 第一道折线绘制
-        let new_target = this.target.chartData[0].data;
-
-        let x = [];
-        let y = [];
-
-        new_target.forEach((item, index) => {
-          x.push(item.name);
-          y.push(item.value);
-        });
-
-        // 修改标题
-        this.option.title.text = this.target.title;
-
-
-
-        this.option.series[0].name = this.target.chartData[0].target;
-
-        // 修改单位
-        console.log(new_target);
-        this.option.yAxis.name = this.target.chartData[0].unit;
-
-
-        this.option.xAxis.data = x;
-        this.option.series[0].data = y;
-
-        // 第二道折线绘制
-
-        let new_target2 = this.target.chartData[1].data;
-        let y2 = [];
-
-        new_target2.forEach((item, index) => {
-          y2.push(item.value);
-        });
-
-        this.option.series[1].name = this.target.chartData[1].target;
-
-        this.option.series[1].data = y2;
-
-
-        // 赋予指标名称
-
-        // 修改指标值
-        let new_legend = [];
-
-
-        new_legend.push(this.target.chartData[0].target);
-        new_legend.push(this.target.chartData[1].target);
-
-        this.option.legend.data = new_legend;
-
-        let options = this.option;
-        console.log("新option");
-        myChart.setOption(options)
-
+      dragNewChart() {
+        const myChart = this.$echarts.init(this.$refs.Line)
+        myChart.resize();
+        myChart.setOption(this.chartOption);
       },
       init() {
-           this.dragChart();
-        // 图表发生变化无论是option 还是data 都会引起
-         this.option = this.chartOption;
-         
-         this.target = this.chartData;
-      },
-    },
-    watch: {
-      option() {
-        this.dragNewChart();
-      },
-      chartData(){
-        // console.log("数据发送变化");
-         this.option = this.chartOption;
-         this.target = this.chartData;
-        
-         this.dragNewChart();
+        this.$nextTick(() => {
+          this.dragChart();
+        });
 
-      },
-      isOnResize() {
-        // console.log("重绘图表");
-        let myChart = this.$echarts.init(this.$refs.Line)
-        myChart.resize();
-        this.dragNewChart();
       }
-    },
-
-    mounted() {
-     
-      this.init();
     }
   }
 

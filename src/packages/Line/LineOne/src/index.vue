@@ -160,8 +160,11 @@
         myChart.setOption(options)
       },
       dragNewChart() {
-        const myChart = this.$echarts.init(this.$refs.Line)
+        const myChart = this.$echarts.init(this.$refs.Line);
+
         myChart.resize();
+
+      
         myChart.setOption(this.chartOption);
       },
       init() {

@@ -185,6 +185,9 @@ export default {
 
       }
 
+        console.log("option",JSON.stringify(options));
+
+
       myChart.setOption(options)
     },
     init() {

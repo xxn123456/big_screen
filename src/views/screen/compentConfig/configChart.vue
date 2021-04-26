@@ -4,8 +4,10 @@
       <div class="config-text">
         图表组件
       </div>
-      <input type="text" placeholder="请输入标题" v-model="title" class="config-input">
+      <input type="text" v-model="title" class="config-input">
 
+
+      <input type="text" v-model="targetNames" class="config-input">
       <div class="config-input">
         <el-cascader v-model="target" :options="targetOptions" placeholder="选择指标项"></el-cascader>
       </div>
@@ -27,7 +29,8 @@
   export default {
     data() {
       return {
-        title:"标题",
+        title:"图表名称",
+        targetNames:"a指标",
         target:[],
         targetOptions:[]
       }
@@ -56,7 +59,8 @@
       sure_chart(){
         this.$emit('change',{
           title:this.title,
-          target_id:this.target[1]
+          target_id:this.target[1],
+          targetNames: this.targetNames
         });
       }
     }

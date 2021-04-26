@@ -107,6 +107,7 @@
 
         }
 
+       
         myChart.setOption(options)
       },
       init() {
