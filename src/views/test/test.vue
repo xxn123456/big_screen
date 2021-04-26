@@ -3,7 +3,7 @@
     <p>折线图样例展示</p>
 
     <div class="line-ms">
-      <map-three />
+      <line-two />
     </div>
 
   </div>

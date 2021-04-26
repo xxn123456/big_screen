@@ -491,7 +491,13 @@
             break;
           case 1:
 
-             let new_cont2=JSON.stringify(this.form.content.data);
+            if(this.form.content==null){
+              this.$message("koa,定时任务咱没有开启，测试结果集不能为空");
+
+              return
+            }
+
+            let new_cont2=JSON.stringify(this.form.content.data);
 
             let msg_update = qs.stringify({
               id: this.form.id,

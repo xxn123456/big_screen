@@ -52,6 +52,19 @@ export function findScreen(data) {
   })
 }
 
+export function prod_option(data) {
+  return request({
+    url: '/screen/prod_option',
+    // 此处admin是代理
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+
+
 
 
 

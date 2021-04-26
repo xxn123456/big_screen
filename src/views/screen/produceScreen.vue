@@ -128,7 +128,8 @@
     findAllComponentType,
     findComponentByType,
     update,
-    findScreen
+    findScreen,
+    prod_option
   } from "@/api/layout.js";
 
   import {
@@ -190,8 +191,10 @@
         now_config: null,
         // 当前是哪一个组件
         now_compent: null,
+        prod_new_config: null,
       }
     },
+   
     mounted() {
       this.userId = this.$route.query.userId;
 
@@ -204,6 +207,8 @@
 
     },
     methods: {
+
+   
       // 切换所有组件
       changeAllCompent(id) {
         this.activeComponentTypeId = id;
@@ -233,7 +238,6 @@
                 this.findComponentByType();
 
               }
-
 
             } else {
               this.$message("获取组件类别失败")
@@ -285,13 +289,36 @@
         ev.preventDefault();
       },
 
+
+
+      compent_enter(ev) {
+
+        this.layout.push({
+          base: {
+            title: "标题",
+            img: "#"
+          },
+          target: {
+            id: 1,
+            content: "",
+          },
+          component: this.dataTransfer,
+          place: {
+            w: 200,
+            h: 200,
+            x: 100,
+            y: 100
+          },
+        })
+      },
+
       // 配置项传递的值
 
-      sure_config(val) {
+      sure_config(config) {
 
         return new Promise((resolve, reject) => {
           let msg = qs.stringify({
-            id: val
+            id: config.target_id
           })
 
           findOne(msg).then((res) => {
@@ -302,6 +329,15 @@
             if (code == "200") {
 
               this.layout[this.now_compent].target = data;
+
+              // 开启配置
+              this.prod_new_config = config.target_id;
+
+              this.layout[this.now_compent].base.title = config.title;
+
+                this.prod_chart();
+
+
 
 
             } else {
@@ -314,55 +350,42 @@
 
       },
 
-      compent_enter(ev) {
+         prod_chart(){
+        let component_id = this.layout[this.now_compent].component.id;
+        let target_id = this.layout[this.now_compent].target.id;
+        let base = this.layout[this.now_compent].base;
 
 
 
 
+        return new Promise((resolve, reject) => {
 
-        this.layout.push({
-          target: {
-            id: 1,
-            content: "",
-          },
-          component: this.dataTransfer,
-          place: {
-            w: 200,
-            h: 200,
-            x: 100,
-            y: 100
-          }
-        })
-      },
+          let msg = qs.stringify({
+            "componet_id": component_id,
+            "target_id": target_id,
+             "title": base.title
+          });
 
+          prod_option(msg).then((res) => {
 
-      addChartTarget(x) {
-        const new_pack = {
-          compent: {
-            compnetAlsx: x.compentPath,
-            compentId: x.id,
-            url: x.compentUrl,
-            option: JSON.parse(x.compentOption)
-          },
-          target: {
-            check: [],
-            data: {
-              title: '应用标题',
-              chartData: []
+            let {
+              code,
+              data
+            } = res;
+
+            if (code == "200") {
+              this.layout[this.now_compent].component.option = data
+            } else {
+              this.$message("获取图表配置失败")
             }
-          },
-          page: {
-            title: ''
-          },
-          place: {
-            x: 300,
-            y: 0,
-            w: 300,
-            h: 300
-          }
-        }
-        this.layout.push(new_pack)
+
+          })
+
+        })
+
       },
+
+
       // 相应拖拽布局点击组件索引
 
       setTargetAndCss(x) {
@@ -395,7 +418,7 @@
 
               let bb = JSON.parse(data.layout);
 
-              console.log("解析出来的数据", bb)
+            
               this.layout = bb;
             } else {
               this.$message("获取当前大屏布局失败")

@@ -9,12 +9,19 @@
     props: ['chartOption', 'chartData', 'isOnResize'],
     data() {
       return {
-        Option: {},
         timeOut: null
       }
 
     },
     watch: {
+
+      chartOption() {
+        this.$nextTick(() => {
+          this.debounce(this.dragNewChart())
+
+        })
+
+      },
 
       chartData() {
 
@@ -37,7 +44,7 @@
     },
     methods: {
       debounce(fn) {
-      
+
         if (this.timeOut) clearTimeout(this.timeOut);
         this.timeOut = setTimeout(() => {
           fn
@@ -153,16 +160,15 @@
         myChart.setOption(options)
       },
       dragNewChart() {
-        console.log("绘制新图")
         const myChart = this.$echarts.init(this.$refs.Line)
         myChart.resize();
-        myChart.setOption(this.Option);
+        myChart.setOption(this.chartOption);
       },
       init() {
         this.$nextTick(() => {
           this.dragChart();
         });
-        this.Option = JSON.parse(this.chartOption);
+
       }
     }
   }
