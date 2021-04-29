@@ -39,7 +39,10 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row.id)">编辑</el-button>
+
+             <el-button size="mini" @click="handlePrew(scope.row.id)">全屏预览</el-button>
+
 
             <el-button size="mini" @click="preScreen(scope.row.id)">设计界面</el-button>
 
@@ -246,7 +249,6 @@
 
       },
       preScreen(id){
-            console.log("路由进行跳转",id)
             this.$router.push({path:'/produceScreen',query: {id:id}})
       },
       handleAdd() {
@@ -263,6 +265,14 @@
         this.form.title = new_row.title;
         this.form.conver = new_row.conver
       },
+
+      handlePrew(id){
+
+         this.$router.push({path:'/prewScreen',query: {id:id}})
+
+      
+      },
+
       cleanRow() {
         for (let key in this.form) {
           this.form[key] = ''

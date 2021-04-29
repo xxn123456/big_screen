@@ -164,8 +164,10 @@
 
         myChart.resize();
 
+        let new_option = JSON.parse(this.chartOption);
+
       
-        myChart.setOption(this.chartOption);
+        myChart.setOption(new_option);
       },
       init() {
         this.$nextTick(() => {

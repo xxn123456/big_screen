@@ -74,8 +74,8 @@ export const constantRoutes = [{
         path: 'user',
         component: () =>
           import('@/views/user/index'),
-          name: '用户管理',
-      
+        name: '用户管理',
+
         meta: {
           title: '用户管理',
           affix: true,
@@ -86,7 +86,7 @@ export const constantRoutes = [{
         path: 'role',
         component: () =>
           import('@/views/role/index'),
-        name:"角色管理",
+        name: "角色管理",
         meta: {
           title: '角色管理',
           icon: 'el-icon-s-home'
@@ -96,7 +96,7 @@ export const constantRoutes = [{
         path: 'meun',
         component: () =>
           import('@/views/menu/index'),
-        name:"菜单管理",
+        name: "菜单管理",
         meta: {
           title: '菜单管理',
           icon: 'el-icon-s-home'
@@ -112,12 +112,11 @@ export const constantRoutes = [{
       title: '数据源',
       icon: 'el-icon-s-home',
     },
-    children: [
-      {
+    children: [{
         path: 'type',
         component: () =>
           import('@/views/sourceType/index'),
-        name:"数据源类别管理",
+        name: "数据源类别管理",
         meta: {
           title: '数据源类别管理',
           icon: 'el-icon-s-home'
@@ -127,7 +126,7 @@ export const constantRoutes = [{
         path: 'index',
         component: () =>
           import('@/views/source/index'),
-          name:"数据源连接管理",
+        name: "数据源连接管理",
         meta: {
           title: '数据源连接管理',
           icon: 'el-icon-s-home'
@@ -143,8 +142,7 @@ export const constantRoutes = [{
       title: '指标',
       icon: 'el-icon-s-home',
     },
-    children: [
-      {
+    children: [{
         path: 'type',
         component: () =>
           import('@/views/targetType/index'),
@@ -174,12 +172,11 @@ export const constantRoutes = [{
       title: '组件',
       icon: 'el-icon-s-home',
     },
-    children: [
-      {
+    children: [{
         path: 'type',
         component: () =>
           import('@/views/componentType/index'),
-          name: '组件类别管理',
+        name: '组件类别管理',
         meta: {
           title: '组件类别管理',
           icon: 'el-icon-s-home'
@@ -189,7 +186,7 @@ export const constantRoutes = [{
         path: 'index',
         component: () =>
           import('@/views/component/index.vue'),
-          name: '大屏组件',
+        name: '大屏组件',
         meta: {
           title: '大屏组件',
           icon: 'el-icon-s-home'
@@ -206,31 +203,47 @@ export const constantRoutes = [{
       icon: 'el-icon-s-home',
     },
     children: [
-     
+
       {
         path: 'index',
         component: () =>
           import('@/views/screen/index'),
-          name: '数字大屏',
+        name: '数字大屏',
         meta: {
           title: '数字大屏',
           icon: 'el-icon-s-home'
         }
       },
-      
-     
+
+
     ]
   },
   {
     path: '/produceScreen',
     component: () =>
       import('@/views/screen/produceScreen.vue'),
-      name: '设计大屏',
+    name: '设计大屏',
+    hidden: true,
     meta: {
       title: '设计大屏',
       icon: 'el-icon-s-home'
     }
   },
+
+
+  {
+    path: '/prewScreen',
+    component: () =>
+      import('@/views/screen/prewScreen.vue'),
+    name: '全屏预览',
+    hidden: true,
+    meta: {
+      title: '全屏预览',
+      icon: 'el-icon-s-home'
+    }
+  },
+
+  
 
   // 界面设置
   {

@@ -48,7 +48,19 @@ Vue.prototype.$echarts = echarts
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
-Vue.use(mavonEditor)
+Vue.use(mavonEditor);
+
+
+
+import VueSocketIO from 'vue-socket.io';
+
+import SocketIO from 'socket.io-client';
+
+Vue.use(new VueSocketIO({
+    // debug: true,
+  connection: SocketIO('http://localhost:3000'),
+})
+)
 
 
 
