@@ -103,7 +103,7 @@
         <div class="cont">
           <!-- 其他数据项操作 -->
 
-          <config-dig :componentType="now_config" @change="sure_config"></config-dig>
+          <config-dig :componentType="now_config" @change="sure_config" @change_type2="sure_config2"></config-dig>
 
 
 
@@ -289,27 +289,111 @@
         ev.preventDefault();
       },
 
+      // 生成组件随机位置
+
+      random_x(min, max) {
+
+        return Math.floor(Math.random() * (max - min)) + min;
+
+      },
+
 
 
       compent_enter(ev) {
 
-        this.layout.push({
-          base: {
-            title: "标题",
-            img: "#"
-          },
-          target: {
-            id: 1,
-            content: "",
-          },
-          component: this.dataTransfer,
-          place: {
-            w: 200,
-            h: 200,
-            x: 100,
-            y: 100
-          },
-        })
+        let com_type = this.dataTransfer.component_type.categoryName;
+
+        if (com_type == "界面组件") {
+
+          this.layout.push({
+            base: {
+              title: "标题",
+              img: "#"
+            },
+            target: {
+              id: 1,
+              content: "",
+            },
+            component: this.dataTransfer,
+            place: {
+              w: 1000,
+              h: 50,
+              x: 100,
+              y: 100
+            },
+          });
+
+        }
+
+        if (com_type == "武汉地图") {
+
+          this.layout.push({
+            base: {
+              title: "标题",
+              img: "#"
+            },
+            target: {
+              id: 1,
+              content: "",
+            },
+            component: this.dataTransfer,
+            place: {
+              w: 500,
+              h: 500,
+              x: 100,
+              y: 100
+            },
+          });
+
+        }
+
+         if (com_type == "图片") {
+
+          this.layout.push({
+            base: {
+              title: "标题",
+              url:"#",
+            },
+            target: {
+              id: 1,
+              content: "",
+            },
+            component: this.dataTransfer,
+            place: {
+              w: 400,
+              h: 300,
+              x: 100,
+              y: 100
+            },
+          });
+
+        }
+
+
+        if (com_type == "折线图" || com_type == "柱状图" || com_type == "横向柱状图" ||
+          com_type == "扇形图" || com_type == "雷达图") {
+
+          this.layout.push({
+            base: {
+              title: "标题",
+              img: "#"
+            },
+            target: {
+              id: 1,
+              content: "",
+            },
+            component: this.dataTransfer,
+            place: {
+              w: 200,
+              h: 200,
+              x: this.random_x(10, 200),
+              y: 100
+            },
+          });
+
+        }
+
+
       },
 
       // 配置项传递的值
@@ -330,12 +414,33 @@
 
               this.layout[this.now_compent].target = data;
 
+
+
+
+
               // 开启配置
-              this.prod_new_config = config.target_id;
 
-              this.layout[this.now_compent].base.title = config.title;
+              if (config.hasOwnProperty('target_id')) {
 
-              this.layout[this.now_compent].base.targetNames = config.targetNames
+                this.prod_new_config = config.target_id;
+
+              }
+
+              if (config.hasOwnProperty('title')) {
+                this.layout[this.now_compent].base.title = config.title;
+
+              }
+
+              if (config.hasOwnProperty('targetNames')) {
+
+                this.layout[this.now_compent].base.targetNames = config.targetNames
+
+              }
+
+
+
+
+
 
               this.prod_chart();
 
@@ -352,7 +457,32 @@
 
       },
 
+      sure_config2(config) {
+
+        console.log("所有配置项",config);
+
+        if(config.title){
+
+           this.layout[this.now_compent].base.title = config.title;
+
+        }
+
+        if(config.url){
+
+           this.layout[this.now_compent].base.url = config.url;
+
+        }
+
+        
+       
+
+
+        this.layout[this.now_compent].component.option = config;
+
+      },
+
       prod_chart() {
+
         let component_id = this.layout[this.now_compent].component.id;
         let target_id = this.layout[this.now_compent].target.id;
         let base = this.layout[this.now_compent].base;

@@ -1,13 +1,15 @@
 <template>
   <div class="foot">
     <div class="top">
-      武汉市健康委发布
+      武汉市测试屏幕
     </div>
     <div class="bottom">
       <div class="left">
-        <img src="../img/ctylogo.png" alt="">
 
-        <img src="../img/wdlogo.png" alt="">
+        特别鸣谢:小小鸟提供技术支持
+        <!-- <img src="../img/ctylogo.png" alt="">
+
+        <img src="../img/wdlogo.png" alt=""> -->
       </div>
       <div class="right">
         联合技术支持

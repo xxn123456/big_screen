@@ -4,8 +4,12 @@
     <div class="config-text">
             文字组件
     </div>
-      <input type="text" placeholder="请输入标题" class="config-input">
+      <input type="text" placeholder="请输入标题" class="config-input" v-model="title">
     </div>
+
+     <div class="config-h">
+       <span @click="sure_chart">确定</span>
+      </div>
 
   </div>
 </template>
@@ -14,11 +18,18 @@
   export default {
     data() {
       return {
+        title:"请输入描述"
 
       }
 
     },
     methods: {
+
+       sure_chart(){
+        this.$emit('change_type2',{
+          title:this.title
+        });
+      }
 
     }
   }
@@ -46,6 +57,21 @@
     margin-bottom: 15px;
 
   }
+
+  .config-h{
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+
+
+   }
 
   ::-webkit-input-placeholder {
     /* WebKit browsers */

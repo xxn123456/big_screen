@@ -84,11 +84,14 @@
         </el-form-item>
 
         <el-form-item label="组件预览图">
-          <el-upload class="upload-demo" action="http://localhost:3000/component/upload" multiple :limit="1"
+
+          <el-upload class="upload-demo" :action="'/component/upload'|h_img" multiple :limit="1"
             :file-list="fileList" :on-success="uploadSuccess">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
+
+
         </el-form-item>
 
         <el-form-item label="组件预览图">

@@ -78,6 +78,9 @@ import MapTwo from './Map/MapTwo/index.js'
 
 import MapThree from './Map/MapThree/index.js'
 
+
+import ImgOne from './Img/ImgOne/index.vue'
+
 // 存储组件列表
 const components = [
 
@@ -128,7 +131,8 @@ const components = [
   // 导入地图
   MapOne,
   MapTwo,
-  MapThree
+  MapThree,
+  ImgOne
 ]
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
 const install = function(Vue) {
@@ -184,6 +188,6 @@ export default {
   // 导入地图
   MapOne,
   MapTwo,
-  MapThree
-
+  MapThree,
+  ImgOne
 }

@@ -212,7 +212,10 @@
       dragNewChart() {
         const myChart = this.$echarts.init(this.$refs.Line)
         myChart.resize();
-       myChart.setOption(this.chartOption);
+        let new_option = JSON.parse(this.chartOption);
+
+      
+        myChart.setOption(new_option);
       },
       init() {
         this.$nextTick(() => {

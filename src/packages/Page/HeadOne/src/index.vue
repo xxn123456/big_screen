@@ -1,41 +1,33 @@
 <template>
   <div class="screen-title">
-    <span>{{ name }}</span>
+    <span>{{ title }}</span>
   </div>
 </template>
 <script>
 export default {
   name: 'HeadOne',
-  props: ['screenPage'],
-  data() {
-    return {
-      name: '测试大屏'
+  props: ['chartOption', 'chartData', 'isOnResize'],
+  data(){
+    return{
+       title:"大屏标题描述"
     }
   },
-  computed: {
-    fatherTitle() {
-      return this.screenPage.title
-    }
-  },
+  watch:{
+     chartOption(){
 
-  watch: {
-    fatherTitle() {
-      this.name = this.fatherTitle
-    }
+      
+       this.$nextTick(()=>{
+         this.title=this.chartData.base.title
+       })
+     }
   },
-  mounted() {
-    this.init()
-  },
-  methods: {
-    init() {
-      this.name = this.screenPage.title
-    }
-  }
+ 
 }
 </script>
 <style lang="scss" scoped>
     .screen-title {
       background-image: url('../img/newtop1.png');
+      width: 100%;
       height: 100%;
       background-size: 100% 100%;
       background-origin: center;

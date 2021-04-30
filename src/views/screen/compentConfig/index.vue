@@ -28,10 +28,45 @@
         )
 
       }
+      if (this.componentType == "界面组件") {
+        return createElement(
+          'config-text', {
+            on: {
+              change_type2(val) {
+
+                _this.$emit("change_type2", val)
+
+
+
+              }
+            }
+          },
+          this.$slots.default
+        )
+
+
+
+      }
+
+
+
+
       if (this.componentType == "图片") {
         return createElement(
           'config-img',
+          {
+             on: {
+              change_type2(val) {
+
+                _this.$emit("change_type2", val)
+
+
+
+              }
+            }
+          },
           this.$slots.default
+          
         )
 
 
@@ -39,19 +74,19 @@
 
 
 
-      if (this.componentType == "折线图"||this.componentType == "柱状图"||this.componentType == "横向柱状图"||this.componentType == "扇形图"||this.componentType == "雷达图"||this.componentType == "地图") {
+      if (this.componentType == "折线图" || this.componentType == "柱状图" || this.componentType == "横向柱状图" || this
+        .componentType == "扇形图" || this.componentType == "雷达图" || this.componentType == "地图") {
         return createElement(
-          'config-chart',
-          {
-              on:{
-                    change(val){
+          'config-chart', {
+            on: {
+              change(val) {
 
-                      _this.$emit("change",val)
+                _this.$emit("change", val)
 
-                     
 
-                    }
+
               }
+            }
           },
           this.$slots.default
         )
