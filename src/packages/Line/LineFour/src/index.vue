@@ -262,15 +262,35 @@
       dragNewChart() {
         const myChart = this.$echarts.init(this.$refs.Line)
         myChart.resize();
-         let new_option = JSON.parse(this.chartOption);
+          if(typeof(this.chartOption)=='string'){
+          let new_option = JSON.parse(this.chartOption);
 
-      
-        myChart.setOption(new_option);
+          myChart.setOption(new_option);
+
+
+        }else{
+
+          myChart.setOption(this.chartOption);
+
+        }
       },
       init() {
-        this.$nextTick(() => {
-          this.dragChart();
-        });
+        if (typeof (this.chartOption) == 'string') {
+          this.$nextTick(() => {
+            this.dragChart();
+          });
+
+        }else{
+
+           this.$nextTick(() => {
+
+             this.dragNewChart();
+
+
+           })
+
+          
+        }
 
       }
     }

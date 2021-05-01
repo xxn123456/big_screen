@@ -279,10 +279,10 @@
 
       },
 
-      dragstartHandler(ev, val) {
+      dragstartHandler(ev,val) {
 
-        console.log("开始拖到")
-        this.dataTransfer = val;
+        console.log("开始拖到",val);
+        this.dataTransfer = Object.assign({},val);
       },
       onDragOver(ev) {
 

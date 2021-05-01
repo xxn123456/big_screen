@@ -39,10 +39,10 @@
   }
   export default {
     name: 'MapOne',
-    props: ['chartOption', 'isOnResize'],
+    props: ['chartOption','chartData', 'isOnResize'],
     data() {
       return {
-        chartData: [{
+        mapData: [{
             name: '黄陂区',
             value: 10
 
@@ -87,10 +87,18 @@
       })
      
     },
+    watch:{
+      isOnResize(){
+
+          this.setMap()
+        
+
+      }
+    },
     methods: {
       setMap() {
         var mapChart = this.$echarts.init(this.$refs.sendArear)
-        this.$echarts.registerMap('wuhan', geoJson);
+        this.$echarts.registerMap('wuhan',geoJson);
         mapChart.resize();
         mapChart.setOption({
           title: {
@@ -145,7 +153,7 @@
               name: '电子健康卡-发放展示',
               type: 'effectScatter',
               coordinateSystem: 'geo',
-              data: convertData(this.chartData),
+              data: convertData(this.mapData),
               symbolSize: function (val) {
                 return val[2] / 10
               },
@@ -182,7 +190,7 @@
                 }
               },
 
-              data: this.chartData
+              data: this.mapData
             }
 
           ]

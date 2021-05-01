@@ -1,6 +1,16 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
+import {
+  login,
+  logout,
+  getInfo
+} from '@/api/user'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
+import router, {
+  resetRouter
+} from '@/router'
 import qs from 'querystring'
 
 const state = {
@@ -49,14 +59,25 @@ const mutations = {
 
 const actions = {
   // login/login.vue 执行逻辑
-  login({ commit }, userInfo) {
+  login({
+    commit
+  }, userInfo) {
     console.log(userInfo)
-    const { username, password } = userInfo
+    const {
+      username,
+      password
+    } = userInfo
     return new Promise((resolve, reject) => {
       // 将json 字符串转化为x-from
-      const user = qs.stringify({ userName: username.trim(), password: password })
+      const user = qs.stringify({
+        userName: username.trim(),
+        password: password
+      })
       login(user).then((res) => {
-        const { code, token } = res
+        const {
+          code,
+          token
+        } = res
 
         if (code == '200') {
           // 储存token 到vuex
@@ -72,10 +93,15 @@ const actions = {
       })
     })
   },
-  getInfo({ commit, state }) {
+  getInfo({
+    commit,
+    state
+  }) {
     return new Promise((resolve, reject) => {
       getInfo().then((res) => {
-        const { data } = res;
+        const {
+          data
+        } = res;
 
         commit('SET_ID', data.id)
 
@@ -92,27 +118,25 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        resetRouter()
+  logout({
+    commit,
+    state,
+    dispatch
+  }) {
+    removeToken()
+    resetRouter()
 
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-        dispatch('tagsView/delAllViews', null, { root: true })
-
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+    // reset visited views and cached views
+    // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+    dispatch('tagsView/delAllViews', null, {
+      root: true
     })
   },
 
   // remove token
-  resetToken({ commit }) {
+  resetToken({
+    commit
+  }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
@@ -122,30 +146,41 @@ const actions = {
   },
 
   // dynamically modify permissions
-  changeRoles({ commit, dispatch }, role) {
+  changeRoles({
+    commit,
+    dispatch
+  }, role) {
     return new Promise(async resolve => {
       const token = role + '-token'
 
       commit('SET_TOKEN', token)
       setToken(token)
 
-      const { roles } = await dispatch('getInfo')
+      const {
+        roles
+      } = await dispatch('getInfo')
 
       resetRouter()
 
       // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+      const accessRoutes = await dispatch('permission/generateRoutes', roles, {
+        root: true
+      })
 
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)
 
       // reset visited views and cached views
-      dispatch('tagsView/delAllViews', null, { root: true })
+      dispatch('tagsView/delAllViews', null, {
+        root: true
+      })
 
       resolve()
     })
   },
-  setLayout({ commit }, layout) {
+  setLayout({
+    commit
+  }, layout) {
     commit('SET_LAYOUT', layout)
   }
 }
