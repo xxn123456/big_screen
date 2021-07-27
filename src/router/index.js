@@ -73,7 +73,7 @@ export const constantRoutes = [{
     children: [{
         path: 'user',
         component: () =>
-          import('@/views/user/index'),
+          import('@/views/users/index'),
         name: '用户管理',
 
         meta: {
@@ -260,18 +260,18 @@ export const constantRoutes = [{
   },
 
 
-  {
-    path: '/test',
-    component: () =>
-      import('@/views/test/test.vue'),
-    name: '组件测试',
-    hidden: true,
+  // {
+  //   path: '/test',
+  //   component: () =>
+  //     import('@/views/test/test.vue'),
+  //   name: '组件测试',
+  //   hidden: true,
 
-    meta: {
-      title: '设计界面',
-      icon: 'el-icon-s-platform'
-    }
-  }
+  //   meta: {
+  //     title: '设计界面',
+  //     icon: 'el-icon-s-platform'
+  //   }
+  // }
 ]
 
 /**
