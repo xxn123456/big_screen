@@ -7,29 +7,27 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <!-- <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
 
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+
+         <div class="user-avatar">
+            {{username}}
+          </div>
+
         <div class="avatar-wrapper">
-          <img :src="userLogo" class="user-avatar">
+         
+          <img :src="avatar" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
-        
+
         <el-dropdown-menu slot="dropdown">
           <router-link to="/change/info">
             <el-dropdown-item>修改资料</el-dropdown-item>
           </router-link>
-            <router-link to="/change/pwd">
+          <router-link to="/change/pwd">
             <el-dropdown-item>修改密码</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
@@ -75,20 +73,19 @@
         'device'
       ]),
       ...mapState({
-        userPic: state => state.user.userPic,
-         menuId: state => state.tagsView.menuId
+        avatar: state => state.user.avatar,
+        username: state => state.user.name,
+        menuId: state => state.tagsView.menuId
       }),
-      userLogo() {
-        return imgUrl + this.userPic
+
+    },
+    data() {
+      return {
+        userId: ""
       }
     },
-    data(){
-       return{
-         userId:""
-       }
-    },
     methods: {
-       toMark() {
+      toMark() {
         this.$router.push({
           path: '/packBoard',
           // 传递参数到
@@ -106,8 +103,8 @@
         this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       }
     },
-    mounted(){
-        this.userId=localStorage.getItem('id');
+    mounted() {
+      this.userId = localStorage.getItem('id');
     }
   }
 
@@ -144,8 +141,8 @@
     }
 
     .right-menu {
-      float: right;
-      height: 100%;
+      width: 100%;
+      height: 50px;
       line-height: 50px;
 
       &:focus {
@@ -171,18 +168,26 @@
       }
 
       .avatar-container {
+        width: 300px;
+        float: right;
         margin-right: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
 
-        .avatar-wrapper {
-          margin-top: 5px;
-          position: relative;
-
+        
           .user-avatar {
             cursor: pointer;
             width: 40px;
             height: 40px;
             border-radius: 10px;
+            margin-right: 8px;
           }
+
+        .avatar-wrapper {
+          margin-top: 5px;
+          position: relative;
+
 
           .el-icon-caret-bottom {
             cursor: pointer;

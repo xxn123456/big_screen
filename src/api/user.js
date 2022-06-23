@@ -54,6 +54,19 @@ export function create(data) {
   })
 }
 
+
+export function update(data) {
+  return request({
+    url: '/user/update',
+    // 此处admin是代理
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+
 // 删除用户
 export function del(data) {
   return request({

@@ -1,21 +1,26 @@
 <template>
   <div class="table-wrap">
     <div class="table-handle-btns">
-      <el-button type="primary" @click="handleAdd">新增</el-button>
+      <el-button type="primary" @click="openDig">新增</el-button>
       <el-button @click="batchDel">删除</el-button>
       <!-- <el-button>导出</el-button> -->
     </div>
-    <div class="search">
-      <span class="demonstration">创建时间：</span>
-      <el-date-picker v-model="search.time" type="daterange" range-separator="至" start-placeholder="开始日期"
-        format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss" end-placeholder="结束日期">
-      </el-date-picker>
-    </div>
-    <div class="search">
-      <span class="demonstration">按照名称：</span>
-      <el-input v-model="search.name" placeholder="请输入内容" class="search-name"></el-input>
-      <el-button @click="searchList">开始搜索</el-button>
-    </div>
+
+    <el-form :model="search" label-width="80px" inline>
+
+      <el-form-item label="创建时间:">
+        <el-date-picker v-model="search.time" type="daterange" range-separator="至" start-placeholder="开始日期"
+          @change="searchList" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss" end-placeholder="结束日期">
+        </el-date-picker>
+
+      </el-form-item>
+      <el-form-item label="按照名称:">
+
+        <el-input v-model="search.name" placeholder="请输入内容" class="search-name" @change="searchList"></el-input>
+      </el-form-item>
+
+
+    </el-form>
 
     <div class="table-main">
 
@@ -25,9 +30,15 @@
         </el-table-column>
         <el-table-column type="index" width="50">
         </el-table-column>
-        <el-table-column prop="userName" label="用户名" width="180" align="left">
+        <el-table-column prop="username" label="用户名" width="180" align="left">
+
+
         </el-table-column>
-        <el-table-column prop="avatar" label="头像" width="180" align="left">
+        <el-table-column label="头像" width="180" align="left">
+
+           <template slot-scope="scope">
+             <img class="user-img" :src="scope.row.avatar" alt="">
+           </template>
         </el-table-column>
         <el-table-column prop="role_name" label="角色名称" align="right" :formatter="Tableformatter">
         </el-table-column>
@@ -37,50 +48,58 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">变更权限</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">变更权限</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="page-nation">
-      <el-pagination :current-page="currentPage" :page-size="10" layout="total, prev, pager, next, jumper" background
-        :total="total" @current-change="currentChange">
+      <el-pagination :current-page="search.currentPage" :page-size="search.pageSize" layout="total, prev, pager, next, jumper" background
+        :total="search.total" @current-change="currentChange">
       </el-pagination>
     </div>
 
+
+
     <el-dialog title="操作" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="角色:">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="姓名:" prop="username">
+          <el-input v-model="form.username" placeholder="请输入内容" :disabled="this.form.id!=null"></el-input>
+        </el-form-item>
+
+        <el-form-item label="密码:" prop="password">
+          <el-input v-model="form.password" placeholder="请输入内容" :disabled="this.form.id!=null"></el-input>
+        </el-form-item>
+
+        <el-form-item label="头像:" prop="fileList">
+
+          <el-upload class="upload-demo" :action="upLoadUrl"
+            :headers="rquestToken"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :limit="1"
+            :file-list="form.fileList"
+
+            >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+
+
+
+        </el-form-item>
+
+
+
+
+        <el-form-item label="角色:" prop="role_id">
           <el-select v-model="form.role_id" placeholder="请选择">
-          <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
-        </el-form-item>
-       
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="操作" :visible.sync="dialogVisible_add" width="30%" :before-close="handleClose">
-      <el-form ref="form_add" :model="form_add" label-width="80px">
-        <el-form-item label="姓名:">
-          <el-input v-model="form_add.userName" placeholder="请输入内容"></el-input>
+            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
-         <el-form-item label="密码:">
-          <el-input v-model="form_add.password" placeholder="请输入内容"></el-input>
-        </el-form-item>
-        <el-form-item label="角色:">
-          <el-select v-model="form_add.role_id" placeholder="请选择">
-          <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
-        </el-form-item>
-       
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -100,39 +119,74 @@
   } from "@/api/user.js";
   import qs from 'query-string';
   export default {
+    name:"User",
     data() {
       return {
         search: {
-          time: "",
-          name: ""
+          time: [],
+          name: "",
+          total:0,
+          currentPage:1,
+          pageSize:10
+          
         },
         multipleSelection: [],
         roles: [],
         form: {
-          id: "",
-          role_id:""
+          id:null,
+          username: "",
+          password: "",
+          role_id: "",
+          avatar:null,
+          fileList:[]
         },
-        form_add: {
-          userName:"",
-          password:"",
-          role_id:""
+        rules:{
+          username:[
+            { required: true, message: '请输入姓名', trigger: 'blur' }
+          ],
+          password:[
+            { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          role_id:[
+            { required: true, message: '未选择角色', trigger: 'change' }
+          ],
+          fileList:[
+            { required: true, message: '没有选择图片', trigger: 'change' }
+          ],
         },
-        // 0代表新增操作,1代码修改操作
-        submitState: 0,
-        tableData: [{}],
-        currentPage: 1,
-        pageSize: 10,
-        categoryName: "",
-        total: 400,
+        tableData: [],
         dialogVisible: false,
-        dialogVisible_add:false
-
+        rquestToken:{
+          Authorization:'Bearer '+ this.$store.state.user.token
+        }
       }
     },
+    computed:{
+      upLoadUrl(){
+        return process.env.VUE_APP_BASE_API + '/user/upload'
+      }
+
+    },
+    
     mounted() {
-      this.findAll();
+      this.search.currentPage=1;
+      this.searchList();
+     
+      
     },
     methods: {
+
+      handleRemove(){
+
+      },
+      handleSuccess(res){
+      
+
+        this.form.avatar=res.url
+
+       
+
+      },
       // 构建表格提示标签
 
       Tableformatter(row, column, cellValue, index) {
@@ -144,15 +198,18 @@
       },
       // 按照固定条件搜索
       searchList() {
+
         let msg = qs.stringify({
-          currentPage: this.currentPage,
-          pageSize: this.pageSize,
-          userName: this.search.name,
+          currentPage: this.search.currentPage,
+          pageSize: this.search.pageSize,
+          username: this.search.name,
           startTime: this.search.time[0],
           endTime: this.search.time[1]
-        })
-        return new Promise((resolve, reject) => {
-          findAll(msg).then((res) => {
+        });
+
+
+
+        findAll(msg).then((res) => {
             let {
               data,
               code
@@ -161,8 +218,9 @@
               let new_list = data.rows.map((el, index) => {
                 return {
                   id: el.id,
-                  userName: el.userName,
+                  username: el.username,
                   avatar: el.avatar,
+                  password:el.password,
                   role_id: el.role_id,
                   role_name: el.role.name,
                   createdAt: el.createdAt
@@ -175,7 +233,6 @@
             }
 
           })
-        })
 
 
       },
@@ -228,59 +285,41 @@
 
         })
       },
-      findAll() {
-        let msg = qs.stringify({
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        })
-        return new Promise((resolve, reject) => {
-          findAll(msg).then((res) => {
-            let {
-              data,
-              code
-            } = res;
-            if (code == "200") {
-              let new_list = data.rows.map((el, index) => {
-                return {
-                  id: el.id,
-                  userName: el.userName,
-                  avatar: el.avatar,
-                  role_id: el.role_id,
-                  role_name: el.role.name,
-                  createdAt: el.createdAt
-                }
-              })
-              this.tableData = new_list;
-              this.total = data.count;
-            } else {
-              this.$message("获取分页失败")
-            }
+    
+      openDig() {
+        this.dialogVisible=true;
 
-          })
-        })
 
-      },
-      handleAdd() {
-        this.cleanRow();
+        this.form={
+            id:null,
+          username: "",
+          password: "",
+          role_id: "",
+          avatar:null,
+          fileList:[]
+        };
+
         this.findAllRole();
-        this.dialogVisible_add = true;
-        this.submitState = 0;
+      
 
       },
       // 进行编辑
-      handleEdit(index, row) {
+      handleEdit(row) {
+        
+        row['fileList']=[{
+          url:row.avatar,
+          name:row.avatar
+        }];
+        
         this.dialogVisible = true;
         this.findAllRole();
-        this.submitState = 1;
+        
         let new_row = Object.assign({}, row);
-        this.form.id = new_row.id;
-        this.form.role_id = new_row.role_id;
+
+        
+        this.form=new_row;
       },
-      cleanRow() {
-        for (let key in this.form) {
-          this.form[key] = ''
-        }
-      },
+
       // 进行删除
       handleDelete(index, row) {
         let msg_del = qs.stringify({
@@ -306,35 +345,19 @@
 
       },
       submit() {
-        switch (this.submitState) {
-          case 0:
-            let msg_create = qs.stringify({
-              userName: this.form_add.userName,
-              password: this.form_add.password,
-              role_id: this.form_add.role_id
-            });
-            create(msg_create).then((res) => {
-              let {
-                code
-              } = res;
-              if (code == "200") {
-                 this.dialogVisible_add = false;
-                // 刷新表格
-                this.findAll();
-              } else {
-                this.messages("创建用户失败")
-              }
 
-            })
-            break;
-          case 1:
+          this.$refs['form'].validate((valid) => {
 
-            let msg_updata = qs.stringify({
+            if(this.form.id){
+
+                     let msg_updata = qs.stringify({
               id: this.form.id,
-              categoryName: this.form.categoryName,
-              categoryCreater: "admin"
+               username: this.form.username,
+  
+              role_id: this.form.role_id,
+              avatar:this.form.avatar
             });
-            updata(msg_updata).then((res) => {
+            update(msg_updata).then((res) => {
               let {
                 articleType,
                 code
@@ -348,11 +371,37 @@
               }
 
             })
-            break;
-          default:
-            this.$message("操作异常")
 
-        }
+           
+
+            }else{
+
+            let msg_create = qs.stringify({
+              username: this.form.username,
+              password: this.form.password,
+              role_id: this.form.role_id,
+              avatar:this.form.avatar
+            });
+            create(msg_create).then((res) => {
+              let {
+                code
+              } = res;
+              if (code == "200") {
+                this.dialogVisible_add = false;
+                // 刷新表格
+                this.findAll();
+              } else {
+                this.messages("创建用户失败")
+              }
+
+            })
+
+            }
+
+            console.log("校验的值",valid)
+
+          })
+      
 
       },
       handleClose() {
@@ -369,7 +418,7 @@
 <style lang="scss" scoped>
   .table-wrap {
     width: 100%;
-    padding: 90px 60px;
+    padding: 30px 40px;
     color: #555555;
     background-color: #fff;
 
@@ -399,6 +448,10 @@
 
     .table-main {
       width: 100%;
+      .user-img{
+        width: 50px;
+        height: 50px;
+      }
 
     }
 

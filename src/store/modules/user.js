@@ -11,7 +11,8 @@ import {
 import router, {
   resetRouter
 } from '@/router'
-import qs from 'querystring'
+import qs from 'querystring';
+
 
 const state = {
   userId: '',
@@ -70,7 +71,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       // 将json 字符串转化为x-from
       const user = qs.stringify({
-        userName: username.trim(),
+        username: username.trim(),
         password: password
       })
       login(user).then((res) => {
@@ -103,9 +104,15 @@ const actions = {
           data
         } = res;
 
-        commit('SET_ID', data.id)
+        commit('SET_ID', data.id);
 
-        const userRole = ['admin']
+        commit("SET_AVATAR",data.avatar);
+
+        commit("SET_NAME",data.username);
+
+        const userRole = ['admin'];
+
+
 
         commit('SET_ROLES', userRole)
 
